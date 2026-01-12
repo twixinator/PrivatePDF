@@ -2,6 +2,7 @@ import '../models/pdf_file_info.dart';
 import '../models/page_range.dart';
 import '../models/pdf_operation_result.dart';
 import '../models/pdf_operation_error.dart';
+import '../core/js_interop/i_pdf_lib_bridge.dart';
 import '../core/js_interop/pdf_lib_bridge.dart';
 import 'file_validation_service.dart';
 import 'pdf_service.dart';
@@ -9,10 +10,13 @@ import 'pdf_service.dart';
 /// Implementation of PdfService using pdf-lib via JavaScript interop
 class PdfServiceImpl implements PdfService {
   final FileValidationService _validator;
+  final IPdfLibBridge _pdfLibBridge;
 
   PdfServiceImpl({
     required FileValidationService validator,
-  }) : _validator = validator;
+    IPdfLibBridge? pdfLibBridge,
+  })  : _validator = validator,
+        _pdfLibBridge = pdfLibBridge ?? PdfLibBridge.instance;
 
   @override
   Future<PdfOperationResult> mergePdfs(List<PdfFileInfo> files) async {
@@ -32,7 +36,7 @@ class PdfServiceImpl implements PdfService {
       }
 
       // 3. Check if PDF-lib is available
-      if (!PdfLibBridge.isAvailable()) {
+      if (!_pdfLibBridge.isAvailable()) {
         return const PdfOperationFailure(PdfOperationError.jsInteropError);
       }
 
@@ -41,7 +45,7 @@ class PdfServiceImpl implements PdfService {
 
       // 5. Call JS bridge to merge PDFs with timeout
       final mergedBytes = await _withTimeout(
-        PdfLibBridge.mergePDFs(bytesArray),
+        _pdfLibBridge.mergePDFs(bytesArray),
         const Duration(seconds: 30),
       );
 
@@ -74,7 +78,7 @@ class PdfServiceImpl implements PdfService {
       // 1. Get page count first if not available
       PdfFileInfo fileWithPages = file;
       if (file.pageCount == null) {
-        final pageCount = await PdfLibBridge.getPageCount(file.bytes);
+        final pageCount = await _pdfLibBridge.getPageCount(file.bytes);
         fileWithPages = file.copyWithPageCount(pageCount);
       }
 
@@ -91,7 +95,7 @@ class PdfServiceImpl implements PdfService {
       }
 
       // 4. Check if PDF-lib is available
-      if (!PdfLibBridge.isAvailable()) {
+      if (!_pdfLibBridge.isAvailable()) {
         return const PdfOperationFailure(PdfOperationError.jsInteropError);
       }
 
@@ -100,7 +104,7 @@ class PdfServiceImpl implements PdfService {
 
       // 6. Call JS bridge to split PDF with timeout
       final splitBytes = await _withTimeout(
-        PdfLibBridge.splitPDF(fileWithPages.bytes, zeroIndexedPages),
+        _pdfLibBridge.splitPDF(fileWithPages.bytes, zeroIndexedPages),
         const Duration(seconds: 30),
       );
 
@@ -142,13 +146,13 @@ class PdfServiceImpl implements PdfService {
       }
 
       // 3. Check if PDF-lib is available
-      if (!PdfLibBridge.isAvailable()) {
+      if (!_pdfLibBridge.isAvailable()) {
         return const PdfOperationFailure(PdfOperationError.jsInteropError);
       }
 
       // 4. Call JS bridge to protect PDF with timeout
       final protectedBytes = await _withTimeout(
-        PdfLibBridge.protectPDF(file.bytes, password),
+        _pdfLibBridge.protectPDF(file.bytes, password),
         const Duration(seconds: 30),
       );
 

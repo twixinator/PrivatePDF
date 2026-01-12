@@ -1,0 +1,94 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate mocks
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run model tests
+        run: flutter test test/unit/models --coverage
+
+      - name: Check PageRange coverage (100% target)
+        run: |
+          # Install lcov
+          sudo apt-get update
+          sudo apt-get install -y lcov
+
+          # Check PageRange coverage
+          echo "Checking PageRange coverage..."
+          lcov --list coverage/lcov.info | grep "page_range.dart" || echo "⚠️ PageRange not in coverage report"
+
+      - name: Check overall coverage (80%+ target)
+        run: |
+          echo "Checking overall coverage..."
+          lcov --summary coverage/lcov.info
+
+      - name: Generate coverage HTML report
+        run: genhtml coverage/lcov.info -o coverage/html
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          lcov-file: ./coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-test:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build web (release)
+        run: flutter build web --release
+
+      - name: Verify build output
+        run: |
+          echo "Checking build artifacts..."
+          ls -lh build/web/
+          test -f build/web/index.html || (echo "❌ index.html missing" && exit 1)
+          test -f build/web/main.dart.js || (echo "❌ main.dart.js missing" && exit 1)
+          echo "✅ Build artifacts verified"

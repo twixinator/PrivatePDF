@@ -11,6 +11,7 @@ library pdf_lib_bridge;
 import 'dart:js_util' as js_util;
 import 'dart:typed_data';
 import 'package:js/js.dart';
+import 'i_pdf_lib_bridge.dart';
 
 // JavaScript function declarations
 @JS('PDFLibProcessor.mergePDFs')
@@ -26,17 +27,19 @@ external Object _protectPDF(Uint8List pdfBytes, String password);
 external Object _getPageCount(Uint8List pdfBytes);
 
 /// Main bridge class for PDF-lib operations
-/// All methods are static for simplicity
-class PdfLibBridge {
-  /// Private constructor to prevent instantiation
+/// Implements IPdfLibBridge interface for testability
+class PdfLibBridge implements IPdfLibBridge {
+  /// Singleton instance
+  static final IPdfLibBridge _instance = PdfLibBridge._();
+
+  /// Private constructor to prevent direct instantiation
   PdfLibBridge._();
 
-  /// Merge multiple PDFs into a single document
-  ///
-  /// @param pdfFiles List of PDF file byte arrays
-  /// @returns Merged PDF bytes
-  /// @throws Exception if merge fails
-  static Future<Uint8List> mergePDFs(List<Uint8List> pdfFiles) async {
+  /// Get singleton instance
+  static IPdfLibBridge get instance => _instance;
+
+  @override
+  Future<Uint8List> mergePDFs(List<Uint8List> pdfFiles) async {
     try {
       final promise = _mergePDFs(pdfFiles);
       final result = await js_util.promiseToFuture<dynamic>(promise);
@@ -53,13 +56,8 @@ class PdfLibBridge {
     }
   }
 
-  /// Split PDF by extracting specific pages
-  ///
-  /// @param pdfBytes Original PDF bytes
-  /// @param pageNumbers Zero-indexed page numbers to extract
-  /// @returns New PDF with extracted pages
-  /// @throws Exception if split fails
-  static Future<Uint8List> splitPDF(
+  @override
+  Future<Uint8List> splitPDF(
     Uint8List pdfBytes,
     List<int> pageNumbers,
   ) async {
@@ -77,13 +75,8 @@ class PdfLibBridge {
     }
   }
 
-  /// Protect PDF with password encryption
-  ///
-  /// @param pdfBytes Original PDF bytes
-  /// @param password User password (minimum 6 characters)
-  /// @returns Encrypted PDF bytes
-  /// @throws Exception if protection fails
-  static Future<Uint8List> protectPDF(
+  @override
+  Future<Uint8List> protectPDF(
     Uint8List pdfBytes,
     String password,
   ) async {
@@ -101,12 +94,8 @@ class PdfLibBridge {
     }
   }
 
-  /// Get page count from a PDF
-  ///
-  /// @param pdfBytes PDF bytes
-  /// @returns Number of pages
-  /// @throws Exception if reading fails
-  static Future<int> getPageCount(Uint8List pdfBytes) async {
+  @override
+  Future<int> getPageCount(Uint8List pdfBytes) async {
     try {
       final promise = _getPageCount(pdfBytes);
       final result = await js_util.promiseToFuture<dynamic>(promise);
@@ -140,8 +129,8 @@ class PdfLibBridge {
     return Exception('PDF operation failed: $errorMessage');
   }
 
-  /// Check if PDF-lib is loaded and available
-  static bool isAvailable() {
+  @override
+  bool isAvailable() {
     try {
       return js_util.hasProperty(js_util.globalThis, 'PDFLibProcessor');
     } catch (e) {

@@ -3,6 +3,7 @@ import '../models/pdf_file_info.dart';
 import '../models/page_range.dart';
 import '../models/validation_result.dart';
 import '../models/pdf_operation_error.dart';
+import '../core/js_interop/i_pdf_lib_bridge.dart';
 import '../core/js_interop/pdf_lib_bridge.dart';
 
 /// Service for validating PDF files and operations
@@ -12,13 +13,15 @@ class FileValidationService {
   final int minMergeFiles;
   final int maxMergeFiles;
   final int minPasswordLength;
+  final IPdfLibBridge _pdfLibBridge;
 
   FileValidationService({
     this.maxFileSizeBytes = 5 * 1024 * 1024, // 5MB default for free tier
     this.minMergeFiles = 2,
     this.maxMergeFiles = 10,
     this.minPasswordLength = 6,
-  });
+    IPdfLibBridge? pdfLibBridge,
+  }) : _pdfLibBridge = pdfLibBridge ?? PdfLibBridge.instance;
 
   /// Validate files for merge operation
   ValidationResult validateMerge(List<PdfFileInfo> files) {
@@ -122,22 +125,16 @@ class FileValidationService {
   ///
   /// Performs deep validation including:
   /// 1. Magic byte check (PDF header: %PDF)
-  /// 2. MIME type validation
-  /// 3. Corruption detection via page count extraction
+  /// 2. Corruption detection via page count extraction
   Future<ValidationResult> validatePdfIntegrity(PdfFileInfo file) async {
     // 1. Magic byte check
     if (!_hasPdfMagicBytes(file.bytes)) {
       return ValidationResult.failure(PdfOperationError.invalidFile);
     }
 
-    // 2. MIME type validation
-    if (!_hasValidMimeType(file)) {
-      return ValidationResult.failure(PdfOperationError.invalidFile);
-    }
-
-    // 3. Corruption detection - attempt to extract page count
+    // 2. Corruption detection - attempt to extract page count
     try {
-      final pageCount = await PdfLibBridge.getPageCount(file.bytes);
+      final pageCount = await _pdfLibBridge.getPageCount(file.bytes);
       if (pageCount <= 0) {
         return ValidationResult.failure(PdfOperationError.invalidFile);
       }
@@ -162,23 +159,4 @@ class FileValidationService {
         bytes[3] == 0x46; // F
   }
 
-  /// Validate MIME type
-  bool _hasValidMimeType(PdfFileInfo file) {
-    // Accept standard PDF MIME types
-    const validMimeTypes = [
-      'application/pdf',
-      'application/x-pdf',
-      'application/acrobat',
-      'applications/vnd.pdf',
-      'text/pdf',
-      'text/x-pdf',
-    ];
-
-    // If MIME type is not set, rely on magic bytes
-    if (file.mimeType == null || file.mimeType!.isEmpty) {
-      return true;
-    }
-
-    return validMimeTypes.contains(file.mimeType!.toLowerCase());
-  }
 }
