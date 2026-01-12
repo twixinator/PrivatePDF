@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <base href="/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PrivatPDF - PDF bearbeiten, 100% privat und lokal. Keine Uploads, keine Cloud.">
@@ -22,11 +23,11 @@
   <!-- 🔒 SECURITY: Content Security Policy -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
-                 script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.skypack.dev;
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.skypack.dev https://www.gstatic.com blob:;
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                  font-src 'self' https://fonts.gstatic.com;
                  img-src 'self' data: https:;
-                 connect-src 'self' https://cdn.jsdelivr.net https://cdn.skypack.dev;
+                 connect-src 'self' https://cdn.jsdelivr.net https://cdn.skypack.dev https://www.gstatic.com https://fonts.gstatic.com;
                  worker-src 'self' blob:;
                  frame-src 'none';
                  object-src 'none';
