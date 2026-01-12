@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../models/pdf_file_info.dart';
 import '../models/page_range.dart';
+import '../models/pdf_operation_error.dart';
 import '../models/analytics_event.dart';
 import '../services/pdf_service.dart';
 import '../services/download_service.dart';
@@ -286,7 +287,7 @@ class PdfOperationProvider extends ChangeNotifier {
     if (cancelled) {
       // Log cancellation event
       _analytics.logEvent(
-        AnalyticsEvent.custom(
+        AnalyticsEvent(
           eventName: 'pdf_operation_cancelled',
           category: AnalyticsEventCategory.pdfOperation,
           properties: {

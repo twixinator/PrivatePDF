@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:html' as html;
 import '../../models/pdf_operation_error.dart';
 import '../../models/error_action.dart';
 
@@ -141,7 +142,6 @@ extension PdfOperationErrorX on PdfOperationError {
               onTap: () {
                 // Reload the page
                 // ignore: avoid_web_libraries_in_flutter
-                import 'dart:html' as html;
                 html.window.location.reload();
               },
               icon: Icons.refresh,
