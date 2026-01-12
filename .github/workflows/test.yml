@@ -86,6 +86,9 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Generate mocks
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
       - name: Build web (release)
         run: flutter build web --release
 
