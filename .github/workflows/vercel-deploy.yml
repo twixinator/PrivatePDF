@@ -64,25 +64,22 @@ jobs:
 
       - name: Deploy to Vercel (Production)
         if: github.ref == 'refs/heads/main'
-        run: vercel deploy --prod --yes
+        run: |
+          export VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}
+          export VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}
+          vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./build/web
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy to Vercel (Preview)
         if: github.ref == 'refs/heads/develop' || github.event_name == 'pull_request'
         id: deploy-preview
         run: |
-          DEPLOYMENT_URL=$(vercel deploy --yes)
+          export VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}
+          export VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}
+          DEPLOYMENT_URL=$(vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Preview deployment URL: $DEPLOYMENT_URL"
         working-directory: ./build/web
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Comment PR with preview URL
         if: github.event_name == 'pull_request'
