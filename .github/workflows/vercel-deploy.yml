@@ -56,12 +56,10 @@ jobs:
 
       - name: Deploy to Vercel (Production)
         if: github.ref == 'refs/heads/main'
-        run: |
-          vercel deploy --prod \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ secrets.VERCEL_ORG_ID }}
+        run: vercel deploy --prod --yes
         working-directory: ./build/web
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -69,13 +67,12 @@ jobs:
         if: github.ref == 'refs/heads/develop' || github.event_name == 'pull_request'
         id: deploy-preview
         run: |
-          DEPLOYMENT_URL=$(vercel deploy \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ secrets.VERCEL_ORG_ID }})
+          DEPLOYMENT_URL=$(vercel deploy --yes)
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Preview deployment URL: $DEPLOYMENT_URL"
         working-directory: ./build/web
         env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
