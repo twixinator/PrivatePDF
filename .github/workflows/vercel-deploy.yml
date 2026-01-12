@@ -54,27 +54,13 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      - name: Verify Vercel credentials
+      - name: Setup Vercel project configuration
         run: |
-          echo "Checking Vercel credentials..."
-          if [ -z "$VERCEL_TOKEN" ]; then
-            echo "❌ VERCEL_TOKEN is not set"
-            exit 1
-          fi
-          if [ -z "$VERCEL_ORG_ID" ]; then
-            echo "❌ VERCEL_ORG_ID is not set"
-            exit 1
-          fi
-          if [ -z "$VERCEL_PROJECT_ID" ]; then
-            echo "❌ VERCEL_PROJECT_ID is not set"
-            exit 1
-          fi
-          echo "✅ All Vercel credentials are set"
-          echo "Token length: ${#VERCEL_TOKEN} characters"
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          echo "Creating Vercel project configuration..."
+          mkdir -p ./build/web/.vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > ./build/web/.vercel/project.json
+          cat ./build/web/.vercel/project.json
+          echo "✅ Vercel project configuration created"
 
       - name: Deploy to Vercel (Production)
         if: github.ref == 'refs/heads/main'
