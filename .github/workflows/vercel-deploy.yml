@@ -41,7 +41,7 @@ jobs:
         run: flutter test test/unit/models
 
       - name: Build Flutter Web
-        run: flutter build web --release --web-renderer canvaskit
+        run: flutter build web --release
 
       - name: Verify build
         run: |
