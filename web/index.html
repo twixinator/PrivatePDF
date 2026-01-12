@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PrivatPDF - PDF bearbeiten, 100% privat und lokal. Keine Uploads, keine Cloud.">
+
+  <title>PrivatPDF - PDF bearbeiten, 100% privat & lokal</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#8B9A8A">
+
+  <!-- 🔒 SECURITY: Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.skypack.dev;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com;
+                 img-src 'self' data: https:;
+                 connect-src 'self' https://cdn.jsdelivr.net https://cdn.skypack.dev;
+                 worker-src 'self' blob:;
+                 frame-src 'none';
+                 object-src 'none';
+                 base-uri 'self';">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PrivatPDF - PDF bearbeiten, 100% privat">
+  <meta property="og:description" content="Keine Uploads. Keine Cloud. Ihre Daten bleiben auf Ihrem Gerät.">
+  <meta property="og:image" content="icons/Icon-512.png">
+
+  <!-- Google Fonts fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Loading splash screen */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #FAF8F5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #FAF8F5;
+    }
+
+    .loading-logo {
+      width: 80px;
+      height: 80px;
+      border: 3px solid #8B9A8A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant', serif;
+      font-size: 48px;
+      font-weight: 600;
+      color: #8B9A8A;
+      margin-bottom: 24px;
+    }
+
+    .loading-text {
+      font-size: 24px;
+      font-family: 'Cormorant', serif;
+      font-weight: 600;
+      color: #2A2A2A;
+      margin-bottom: 32px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #E5DDD5;
+      border-top-color: #8B9A8A;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading screen -->
+  <div class="loading" id="loading">
+    <div class="loading-logo">P</div>
+    <div class="loading-text">PrivatPDF</div>
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Network Monitoring for Security Verification -->
+  <script>
+    (function() {
+      'use strict';
+
+      // Helper to log network requests to Dart
+      function logRequestToDart(url, method) {
+        // Check if Flutter app is ready
+        if (window.networkVerificationChannel && typeof window.networkVerificationChannel.logRequest === 'function') {
+          window.networkVerificationChannel.logRequest(url, method);
+        }
+      }
+
+      // Intercept fetch()
+      const originalFetch = window.fetch;
+      window.fetch = function(...args) {
+        const url = args[0] instanceof Request ? args[0].url : args[0];
+        const method = args[0] instanceof Request ? args[0].method : (args[1]?.method || 'GET');
+        logRequestToDart(url, method);
+        return originalFetch.apply(this, args);
+      };
+
+      // Intercept XMLHttpRequest
+      const originalOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+        logRequestToDart(url, method);
+        return originalOpen.apply(this, [method, url, ...rest]);
+      };
+
+      console.log('[NetworkMonitor] Network interception initialized');
+    })();
+  </script>
+
+  <!-- Flutter app root -->
+  <script>
+    // Hide loading screen after Flutter loads
+    window.addEventListener('flutter-first-frame', function() {
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.style.opacity = '0';
+        loading.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => loading.style.display = 'none', 300);
+      }
+    });
+  </script>
+
+  <!-- PDF-lib processor (ES6 module) -->
+  <script type="module" src="js/pdf_lib_processor.js"></script>
+
+  <!-- Flutter Web Bootstrap -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
