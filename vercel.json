@@ -1,8 +1,6 @@
 {
-  "buildCommand": "flutter build web --release --web-renderer canvaskit",
-  "outputDirectory": "build/web",
-  "framework": "flutter",
-  "regions": ["iad1"],
+  "version": 2,
+  "public": false,
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -14,7 +12,7 @@
       ]
     },
     {
-      "source": "/js/(.*)",
+      "source": "/(.*\\.js)",
       "headers": [
         {
           "key": "Cache-Control",
