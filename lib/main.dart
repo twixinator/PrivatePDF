@@ -6,6 +6,10 @@ import 'screens/merge_page.dart';
 import 'screens/split_page.dart';
 import 'screens/protect_page.dart';
 import 'screens/pricing_page.dart';
+import 'screens/impressum_page.dart';
+import 'screens/datenschutz_page.dart';
+import 'screens/agb_page.dart';
+import 'screens/kontakt_page.dart';
 import 'core/di/service_locator.dart';
 import 'animations/page_transitions.dart';
 import 'services/network_verification_service.dart';
@@ -75,6 +79,36 @@ final GoRouter _router = GoRouter(
       path: '/pricing',
       pageBuilder: (context, state) => PageTransitions.fadeSlideUp(
         child: const PricingPage(),
+        state: state,
+      ),
+    ),
+
+    // Legal/Informational pages - Simple fade transition
+    GoRoute(
+      path: '/impressum',
+      pageBuilder: (context, state) => PageTransitions.fade(
+        child: const ImpressumPage(),
+        state: state,
+      ),
+    ),
+    GoRoute(
+      path: '/datenschutz',
+      pageBuilder: (context, state) => PageTransitions.fade(
+        child: const DatenschutzPage(),
+        state: state,
+      ),
+    ),
+    GoRoute(
+      path: '/agb',
+      pageBuilder: (context, state) => PageTransitions.fade(
+        child: const AgbPage(),
+        state: state,
+      ),
+    ),
+    GoRoute(
+      path: '/kontakt',
+      pageBuilder: (context, state) => PageTransitions.fade(
+        child: const KontaktPage(),
         state: state,
       ),
     ),

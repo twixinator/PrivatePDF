@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants/strings.dart';
 import '../theme/app_theme.dart';
@@ -162,18 +163,42 @@ class AppFooter extends StatelessWidget {
         SizedBox(height: Spacing.md),
         ...links.map((link) => Padding(
           padding: const EdgeInsets.only(bottom: Spacing.sm),
-          child: InkWell(
-            onTap: () {}, // TODO: Navigate to respective pages
-            child: Text(
-              link,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textMuted,
+          child: Builder(
+            builder: (context) => InkWell(
+              onTap: () => _navigateToLink(context, link),
+              child: Text(
+                link,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.textMuted,
+                ),
               ),
             ),
           ),
         )),
       ],
     );
+  }
+
+  /// Navigate to the appropriate route based on link text
+  void _navigateToLink(BuildContext context, String link) {
+    // Map link text to routes
+    final routeMap = {
+      // Tool pages
+      Strings.toolMergeTitle: '/merge',
+      Strings.toolSplitTitle: '/split',
+      Strings.toolProtectTitle: '/protect',
+
+      // Legal pages
+      Strings.footerImpressum: '/impressum',
+      Strings.footerDatenschutz: '/datenschutz',
+      Strings.footerAgb: '/agb',
+      Strings.footerKontakt: '/kontakt',
+    };
+
+    final route = routeMap[link];
+    if (route != null) {
+      context.go(route);
+    }
   }
 
   Widget _buildTrustSection(ThemeData theme) {
