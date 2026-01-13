@@ -35,7 +35,7 @@ jobs:
           # Analyze code (web-specific libraries may show as unavailable)
           flutter analyze --no-fatal-infos || true
           # Check for critical errors only
-          flutter analyze 2>&1 | grep -v "dart:js_util" | grep -v "dart:html" | grep -v "dart:js" | grep "error -" && exit 1 || echo "✅ No critical errors"
+          flutter analyze 2>&1 | grep -v "dart:js_util" | grep -v "dart:html" | grep -v "dart:js" | grep "error -" && exit 1 || echo "No critical errors"
 
       - name: Run tests
         run: flutter test test/unit/models
@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Copying vercel.json to build/web for deployment..."
           cp vercel.json build/web/vercel.json
-          echo "✅ Vercel configuration copied"
+          echo "Vercel configuration copied"
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
@@ -66,7 +66,7 @@ jobs:
           mkdir -p ./build/web/.vercel
           echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > ./build/web/.vercel/project.json
           cat ./build/web/.vercel/project.json
-          echo "✅ Vercel project configuration created"
+          echo "Vercel project configuration created"
 
       - name: Deploy to Vercel (Production)
         if: github.ref == 'refs/heads/main'
@@ -97,5 +97,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✅ Preview deployment ready!\n\n🔗 **Preview URL:** ${deploymentUrl}`
+              body: `Preview deployment ready!\n\n**Preview URL:** ${deploymentUrl}`
             })
