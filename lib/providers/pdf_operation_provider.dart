@@ -3,6 +3,7 @@ import '../models/pdf_file_info.dart';
 import '../models/page_range.dart';
 import '../models/pdf_operation_error.dart';
 import '../models/analytics_event.dart';
+import '../models/compression_quality.dart';
 import '../services/pdf_service.dart';
 import '../services/download_service.dart';
 import '../services/analytics_service.dart';
@@ -265,6 +266,81 @@ class PdfOperationProvider extends ChangeNotifier {
       failure: (error) {
         // Log error analytics
         _logOperationError('protect', 1, error.code);
+
+        // Fail operation
+        _queueService.failOperation(operationId, error: error.message);
+        _setState(ErrorState(error));
+
+        // Reset operation tracking
+        _currentOperationId = null;
+        _operationStartTime = null;
+      },
+    );
+  }
+
+  /// Compress PDF with specified quality
+  Future<void> compressPdf(PdfFileInfo file, CompressionQuality quality) async {
+    // Enqueue operation
+    final operationId = _queueService.enqueueOperation(PdfOperationType.compress);
+    _currentOperationId = operationId;
+    _operationStartTime = DateTime.now();
+
+    // Wait for queue position
+    _setState(const ProcessingState());
+
+    // Start operation when queue is ready
+    final started = _queueService.startOperation(operationId);
+    if (!started) {
+      _setState(const ErrorState(PdfOperationError.unknown));
+      _logOperationError('compress', 1, 'Failed to start operation');
+      return;
+    }
+
+    // Start network monitoring
+    _networkVerification.startMonitoring(operationId);
+
+    // Perform PDF operation
+    final result = await _pdfService.compressPdf(file, quality);
+
+    // Stop network monitoring
+    final verificationReport = _networkVerification.stopMonitoring(operationId);
+
+    result.when(
+      success: (bytes, fileName) {
+        // Calculate duration
+        final duration = DateTime.now().difference(_operationStartTime!);
+
+        // Download the compressed PDF
+        _downloadService.downloadPdf(bytes, fileName, operationId: operationId);
+
+        // Log analytics event
+        _analytics.logEvent(
+          AnalyticsEvent.pdfOperationSuccess(
+            operationType: 'compress',
+            fileCount: 1,
+            durationMs: duration.inMilliseconds,
+            outputSizeBytes: bytes.length,
+          ),
+        );
+
+        // Complete operation
+        _queueService.completeOperation(operationId);
+        _setState(SuccessState(fileName));
+
+        // Reset operation tracking
+        _currentOperationId = null;
+        _operationStartTime = null;
+
+        // Auto-reset after 3 seconds
+        Future.delayed(const Duration(seconds: 3), () {
+          if (_state is SuccessState) {
+            reset();
+          }
+        });
+      },
+      failure: (error) {
+        // Log error analytics
+        _logOperationError('compress', 1, error.code);
 
         // Fail operation
         _queueService.failOperation(operationId, error: error.message);

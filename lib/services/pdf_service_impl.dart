@@ -2,6 +2,7 @@ import '../models/pdf_file_info.dart';
 import '../models/page_range.dart';
 import '../models/pdf_operation_result.dart';
 import '../models/pdf_operation_error.dart';
+import '../models/compression_quality.dart';
 import '../core/js_interop/i_pdf_lib_bridge.dart';
 import '../core/js_interop/pdf_lib_bridge.dart';
 import 'file_validation_service.dart';
@@ -171,6 +172,55 @@ class PdfServiceImpl implements PdfService {
       return PdfOperationFailure(error);
     } catch (e) {
       print('[PdfServiceImpl] Unexpected error in protectPdf: $e');
+      return const PdfOperationFailure(PdfOperationError.unknown);
+    }
+  }
+
+  @override
+  Future<PdfOperationResult> compressPdf(
+    PdfFileInfo file,
+    CompressionQuality quality,
+  ) async {
+    try {
+      // 1. Validate file (reuse protect validation since it's single file)
+      final validation = _validator.validateProtect(file, 'dummy');
+      // Only check file validation, not password
+      if (!validation.isValid && validation.error != PdfOperationError.weakPassword) {
+        return PdfOperationFailure(validation.error!);
+      }
+
+      // 2. Validate PDF integrity
+      final integrityCheck = await _validator.validatePdfIntegrity(file);
+      if (!integrityCheck.isValid) {
+        return PdfOperationFailure(integrityCheck.error!);
+      }
+
+      // 3. Check if PDF-lib is available
+      if (!_pdfLibBridge.isAvailable()) {
+        return const PdfOperationFailure(PdfOperationError.jsInteropError);
+      }
+
+      // 4. Call JS bridge to compress PDF with timeout
+      final compressedBytes = await _withTimeout(
+        _pdfLibBridge.compressPdf(file.bytes, quality.qualityPercentage),
+        const Duration(seconds: 60), // Longer timeout for compression
+      );
+
+      // 5. Generate suggested filename
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final baseName = file.name.replaceAll('.pdf', '');
+      final suggestedFileName = '${baseName}_komprimiert_$timestamp.pdf';
+
+      // 6. Return success result
+      return PdfOperationSuccess(
+        pdfBytes: compressedBytes,
+        suggestedFileName: suggestedFileName,
+      );
+    } on Exception catch (e) {
+      final error = _mapExceptionToError(e);
+      return PdfOperationFailure(error);
+    } catch (e) {
+      print('[PdfServiceImpl] Unexpected error in compressPdf: $e');
       return const PdfOperationFailure(PdfOperationError.unknown);
     }
   }

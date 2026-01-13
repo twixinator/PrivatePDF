@@ -5,6 +5,7 @@ import 'screens/landing_page.dart';
 import 'screens/merge_page.dart';
 import 'screens/split_page.dart';
 import 'screens/protect_page.dart';
+import 'screens/compress_page.dart';
 import 'screens/pricing_page.dart';
 import 'screens/impressum_page.dart';
 import 'screens/datenschutz_page.dart';
@@ -70,6 +71,13 @@ final GoRouter _router = GoRouter(
       path: '/protect',
       pageBuilder: (context, state) => PageTransitions.scaleFade(
         child: const ProtectPage(),
+        state: state,
+      ),
+    ),
+    GoRoute(
+      path: '/compress',
+      pageBuilder: (context, state) => PageTransitions.scaleFade(
+        child: const CompressPage(),
         state: state,
       ),
     ),

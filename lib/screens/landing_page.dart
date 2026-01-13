@@ -236,46 +236,72 @@ class _ToolSelectionSection extends StatelessWidget {
               LayoutBuilder(
                 builder: (context, constraints) {
                   if (isDesktop) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    return Column(
                       children: [
-                        Expanded(
-                          child: FadeInWidget(
-                            delay: const Duration(milliseconds: 0),
-                            child: _ToolCard(
-                              title: Strings.toolMergeTitle,
-                              description: Strings.toolMergeDesc,
-                              icon: Icons.merge_outlined,
-                              route: '/merge',
-                              accentColor: AppTheme.primary,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: FadeInWidget(
+                                delay: const Duration(milliseconds: 0),
+                                child: _ToolCard(
+                                  title: Strings.toolMergeTitle,
+                                  description: Strings.toolMergeDesc,
+                                  icon: Icons.merge_outlined,
+                                  route: '/merge',
+                                  accentColor: AppTheme.primary,
+                                ),
+                              ),
                             ),
-                          ),
+                            SizedBox(width: Spacing.xl),
+                            Expanded(
+                              child: FadeInWidget(
+                                delay: const Duration(milliseconds: 100),
+                                child: _ToolCard(
+                                  title: Strings.toolSplitTitle,
+                                  description: Strings.toolSplitDesc,
+                                  icon: Icons.splitscreen_outlined,
+                                  route: '/split',
+                                  accentColor: AppTheme.secondary,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: Spacing.xl),
+                            Expanded(
+                              child: FadeInWidget(
+                                delay: const Duration(milliseconds: 200),
+                                child: _ToolCard(
+                                  title: Strings.toolProtectTitle,
+                                  description: Strings.toolProtectDesc,
+                                  icon: Icons.lock_outlined,
+                                  route: '/protect',
+                                  accentColor: Color(0xFF6B8E7F),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: Spacing.xl),
-                        Expanded(
-                          child: FadeInWidget(
-                            delay: const Duration(milliseconds: 100),
-                            child: _ToolCard(
-                              title: Strings.toolSplitTitle,
-                              description: Strings.toolSplitDesc,
-                              icon: Icons.splitscreen_outlined,
-                              route: '/split',
-                              accentColor: AppTheme.secondary,
+                        SizedBox(height: Spacing.xl),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: FadeInWidget(
+                                delay: const Duration(milliseconds: 300),
+                                child: _ToolCard(
+                                  title: Strings.compressToolTitle,
+                                  description: Strings.compressToolDesc,
+                                  icon: Icons.compress,
+                                  route: '/compress',
+                                  accentColor: Color(0xFF8E6B7F),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        SizedBox(width: Spacing.xl),
-                        Expanded(
-                          child: FadeInWidget(
-                            delay: const Duration(milliseconds: 200),
-                            child: _ToolCard(
-                              title: Strings.toolProtectTitle,
-                              description: Strings.toolProtectDesc,
-                              icon: Icons.lock_outlined,
-                              route: '/protect',
-                              accentColor: Color(0xFF6B8E7F),
-                            ),
-                          ),
+                            SizedBox(width: Spacing.xl),
+                            Expanded(child: SizedBox.shrink()),
+                            SizedBox(width: Spacing.xl),
+                            Expanded(child: SizedBox.shrink()),
+                          ],
                         ),
                       ],
                     );
@@ -312,6 +338,17 @@ class _ToolSelectionSection extends StatelessWidget {
                             icon: Icons.lock_outlined,
                             route: '/protect',
                             accentColor: Color(0xFF6B8E7F),
+                          ),
+                        ),
+                        SizedBox(height: Spacing.lg),
+                        FadeInWidget(
+                          delay: const Duration(milliseconds: 300),
+                          child: _ToolCard(
+                            title: Strings.compressToolTitle,
+                            description: Strings.compressToolDesc,
+                            icon: Icons.compress,
+                            route: '/compress',
+                            accentColor: Color(0xFF8E6B7F),
                           ),
                         ),
                       ],

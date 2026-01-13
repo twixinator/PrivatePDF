@@ -26,6 +26,9 @@ external Object _protectPDF(Uint8List pdfBytes, String password);
 @JS('PDFLibProcessor.getPageCount')
 external Object _getPageCount(Uint8List pdfBytes);
 
+@JS('PDFLibProcessor.compressPdf')
+external Object _compressPdf(Uint8List pdfBytes, double quality);
+
 /// Main bridge class for PDF-lib operations
 /// Implements IPdfLibBridge interface for testability
 class PdfLibBridge implements IPdfLibBridge {
@@ -135,6 +138,25 @@ class PdfLibBridge implements IPdfLibBridge {
       return js_util.hasProperty(js_util.globalThis, 'PDFLibProcessor');
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<Uint8List> compressPdf(
+    Uint8List pdfBytes,
+    double quality,
+  ) async {
+    try {
+      final promise = _compressPdf(pdfBytes, quality);
+      final result = await js_util.promiseToFuture<dynamic>(promise);
+
+      if (result is Uint8List) {
+        return result;
+      } else {
+        return Uint8List.fromList(List<int>.from(result as List));
+      }
+    } catch (e) {
+      throw _convertJsError(e, 'compressPdf');
     }
   }
 }

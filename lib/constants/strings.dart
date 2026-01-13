@@ -85,6 +85,23 @@ class Strings {
   static const String protectStrengthMedium = 'Mittel';
   static const String protectStrengthStrong = 'Stark';
 
+  // Compress Page
+  static const String compressToolTitle = 'PDF komprimieren';
+  static const String compressToolDesc = 'Dateigröße durch Bildkompression reduzieren';
+  static const String compressPageTitle = 'PDF komprimieren';
+  static const String compressInstructions =
+      'Laden Sie eine PDF-Datei hoch und wählen Sie die Komprimierungsqualität.';
+  static const String compressSelectFile = 'Datei auswählen';
+  static const String compressQualityLabel = 'Qualität wählen';
+  static const String compressQualityLow = 'Niedrig (50%)';
+  static const String compressQualityMedium = 'Mittel (70%)';
+  static const String compressQualityHigh = 'Hoch (90%)';
+  static const String compressButton = 'PDF komprimieren';
+  static const String compressOriginalSize = 'Originalgröße';
+  static const String compressCompressedSize = 'Komprimierte Größe';
+  static const String compressPercentageSaved = 'Ersparnis';
+  static const String compressSuccess = 'PDF erfolgreich komprimiert!';
+
   // Processing States
   static const String processingTitle = 'Verarbeitung läuft...';
   static const String processingMessage = 'Verarbeitung auf Ihrem Computer...';

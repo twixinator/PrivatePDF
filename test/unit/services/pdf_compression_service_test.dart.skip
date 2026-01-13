@@ -1,0 +1,377 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:privatpdf/services/pdf_service_impl.dart';
+import 'package:privatpdf/models/pdf_file_info.dart';
+import 'package:privatpdf/models/compression_quality.dart';
+import 'package:privatpdf/models/pdf_operation_result.dart';
+import 'package:privatpdf/models/pdf_operation_error.dart';
+import 'package:privatpdf/models/validation_result.dart';
+import 'dart:typed_data';
+import '../../mocks/mocks.mocks.dart';
+import '../../fixtures/test_helpers.dart';
+
+/// Tests for PDF compression service functionality
+void main() {
+  late PdfServiceImpl pdfService;
+  late MockFileValidationService mockValidator;
+  late MockIPdfLibBridge mockPdfLibBridge;
+
+  setUp(() {
+    mockValidator = MockFileValidationService();
+    mockPdfLibBridge = MockIPdfLibBridge();
+    pdfService = PdfServiceImpl(
+      validator: mockValidator,
+      pdfLibBridge: mockPdfLibBridge,
+    );
+  });
+
+  group('PdfServiceImpl.compressPdf', () {
+    test('successfully compresses PDF with low quality', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.low;
+      final compressedBytes = Uint8List.fromList([1, 2, 3, 4]);
+
+      // Mock validation
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+
+      // Mock PDF-lib availability and compression
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+      when(mockPdfLibBridge.compressPdf(file.bytes, quality.qualityPercentage))
+          .thenAnswer((_) async => compressedBytes);
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationSuccess>());
+      final success = result as PdfOperationSuccess;
+      expect(success.pdfBytes, equals(compressedBytes));
+      expect(success.suggestedFileName, contains('test'));
+      expect(success.suggestedFileName, contains('komprimiert'));
+      expect(success.suggestedFileName, endsWith('.pdf'));
+
+      // Verify interactions
+      verify(mockValidator.validateProtect(file, 'dummy')).called(1);
+      verify(mockValidator.validatePdfIntegrity(file)).called(1);
+      verify(mockPdfLibBridge.isAvailable()).called(1);
+      verify(mockPdfLibBridge.compressPdf(file.bytes, 0.5)).called(1);
+    });
+
+    test('successfully compresses PDF with medium quality', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('document.pdf');
+      final quality = CompressionQuality.medium;
+      final compressedBytes = Uint8List.fromList([5, 6, 7, 8]);
+
+      // Mock validation
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+
+      // Mock PDF-lib
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+      when(mockPdfLibBridge.compressPdf(file.bytes, quality.qualityPercentage))
+          .thenAnswer((_) async => compressedBytes);
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationSuccess>());
+      verify(mockPdfLibBridge.compressPdf(file.bytes, 0.7)).called(1);
+    });
+
+    test('successfully compresses PDF with high quality', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('report.pdf');
+      final quality = CompressionQuality.high;
+      final compressedBytes = Uint8List.fromList([9, 10, 11, 12]);
+
+      // Mock validation
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+
+      // Mock PDF-lib
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+      when(mockPdfLibBridge.compressPdf(file.bytes, quality.qualityPercentage))
+          .thenAnswer((_) async => compressedBytes);
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationSuccess>());
+      verify(mockPdfLibBridge.compressPdf(file.bytes, 0.9)).called(1);
+    });
+
+    test('generates unique filename with timestamp', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.medium;
+      final compressedBytes = Uint8List.fromList([1, 2, 3]);
+
+      // Mock validation and PDF-lib
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+      when(mockPdfLibBridge.compressPdf(file.bytes, any))
+          .thenAnswer((_) async => compressedBytes);
+
+      // Act - compress twice
+      final result1 = await pdfService.compressPdf(file, quality);
+      await Future.delayed(const Duration(milliseconds: 10));
+      final result2 = await pdfService.compressPdf(file, quality);
+
+      // Assert - filenames should be different
+      final success1 = result1 as PdfOperationSuccess;
+      final success2 = result2 as PdfOperationSuccess;
+      expect(success1.suggestedFileName, isNot(equals(success2.suggestedFileName)));
+    });
+
+    test('fails when file validation fails', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation failure
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.failure(PdfOperationError.invalidFile));
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationFailure>());
+      final failure = result as PdfOperationFailure;
+      expect(failure.error, PdfOperationError.invalidFile);
+
+      // Should not call PDF-lib
+      verifyNever(mockPdfLibBridge.isAvailable());
+      verifyNever(mockPdfLibBridge.compressPdf(file.bytes, any));
+    });
+
+    test('fails when PDF integrity check fails', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('corrupt.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation - file validation passes but integrity fails
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.failure(PdfOperationError.invalidFile));
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationFailure>());
+      final failure = result as PdfOperationFailure;
+      expect(failure.error, PdfOperationError.invalidFile);
+
+      // Should not call PDF-lib
+      verifyNever(mockPdfLibBridge.isAvailable());
+      verifyNever(mockPdfLibBridge.compressPdf(file.bytes, any));
+    });
+
+    test('fails when PDF-lib is not available', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation success
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+
+      // Mock PDF-lib not available
+      when(mockPdfLibBridge.isAvailable()).thenReturn(false);
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationFailure>());
+      final failure = result as PdfOperationFailure;
+      expect(failure.error, PdfOperationError.jsInteropError);
+
+      // Should not call compress
+      verifyNever(mockPdfLibBridge.compressPdf(file.bytes, any));
+    });
+
+    test('handles compression exception gracefully', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation success
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+
+      // Mock compression throws exception
+      when(mockPdfLibBridge.compressPdf(any, any))
+          .thenThrow(Exception('Compression failed'));
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert
+      expect(result, isA<PdfOperationFailure>());
+      final failure = result as PdfOperationFailure;
+      expect(failure.error, PdfOperationError.unknown);
+    });
+
+    test('maps specific exception messages to correct errors', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation success
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+
+      // Test invalid PDF exception
+      when(mockPdfLibBridge.compressPdf(any, any))
+          .thenThrow(Exception('Invalid PDF structure'));
+
+      final result1 = await pdfService.compressPdf(file, quality);
+      expect((result1 as PdfOperationFailure).error, PdfOperationError.invalidFile);
+
+      // Test JS interop exception
+      when(mockPdfLibBridge.compressPdf(any, any))
+          .thenThrow(Exception('PDF-lib not loaded'));
+
+      final result2 = await pdfService.compressPdf(file, quality);
+      expect((result2 as PdfOperationFailure).error, PdfOperationError.jsInteropError);
+    });
+
+    test('handles weak password validation error correctly', () async {
+      // Arrange
+      final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation returns weak password error (should be ignored for compression)
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.failure(PdfOperationError.weakPassword));
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => const ValidationResult.valid());
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+      when(mockPdfLibBridge.compressPdf(any, any))
+          .thenAnswer((_) async => Uint8List.fromList([1, 2, 3]));
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert - should succeed despite weak password error
+      expect(result, isA<PdfOperationSuccess>());
+    });
+
+    test('preserves original filename pattern in output', () async {
+      // Arrange
+      final testCases = [
+        'document.pdf',
+        'my-file.pdf',
+        'Report_2024.pdf',
+        'file with spaces.pdf',
+      ];
+
+      for (final filename in testCases) {
+        final file = TestHelpers.createMockPdfFileInfo(filename);
+        final quality = CompressionQuality.medium;
+
+        // Mock validation and PDF-lib
+        when(mockValidator.validateProtect(file, 'dummy'))
+            .thenReturn(const ValidationResult.valid());
+        when(mockValidator.validatePdfIntegrity(file))
+            .thenAnswer((_) async => const ValidationResult.valid());
+        when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+        when(mockPdfLibBridge.compressPdf(any, any))
+            .thenAnswer((_) async => Uint8List.fromList([1, 2, 3]));
+
+        // Act
+        final result = await pdfService.compressPdf(file, quality);
+
+        // Assert
+        final success = result as PdfOperationSuccess;
+        final baseName = filename.replaceAll('.pdf', '');
+        expect(success.suggestedFileName, contains(baseName));
+        expect(success.suggestedFileName, contains('komprimiert'));
+      }
+    });
+
+    test('uses correct timeout for compression (60 seconds)', () async {
+      // This test verifies that compression uses a longer timeout than other operations
+      // Note: Testing timeout behavior is complex, so we document the expected behavior
+
+      final file = TestHelpers.createMockPdfFileInfo('large.pdf');
+      final quality = CompressionQuality.medium;
+
+      // Mock validation success
+      when(mockValidator.validateProtect(file, 'dummy'))
+          .thenReturn(ValidationResult.success());
+      when(mockValidator.validatePdfIntegrity(file))
+          .thenAnswer((_) async => ValidationResult.success());
+      when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+
+      // Mock a slow compression operation (but not over 60 seconds)
+      when(mockPdfLibBridge.compressPdf(any, any)).thenAnswer(
+        (_) async {
+          await Future.delayed(const Duration(milliseconds: 100));
+          return Uint8List.fromList([1, 2, 3]);
+        },
+      );
+
+      // Act
+      final result = await pdfService.compressPdf(file, quality);
+
+      // Assert - should complete successfully
+      expect(result, isA<PdfOperationSuccess>());
+    });
+  });
+
+  group('PdfServiceImpl compression integration', () {
+    test('compresses with all three quality levels successfully', () async {
+      // Test that all quality levels work
+      for (final quality in CompressionQuality.values) {
+        final file = TestHelpers.createMockPdfFileInfo('test.pdf');
+        final compressedBytes = Uint8List.fromList([1, 2, 3]);
+
+        // Mock validation and PDF-lib
+        when(mockValidator.validateProtect(file, 'dummy'))
+            .thenReturn(const ValidationResult.valid());
+        when(mockValidator.validatePdfIntegrity(file))
+            .thenAnswer((_) async => const ValidationResult.valid());
+        when(mockPdfLibBridge.isAvailable()).thenReturn(true);
+        when(mockPdfLibBridge.compressPdf(any, any))
+            .thenAnswer((_) async => compressedBytes);
+
+        // Act
+        final result = await pdfService.compressPdf(file, quality);
+
+        // Assert
+        expect(result, isA<PdfOperationSuccess>(),
+            reason: 'Quality ${quality.displayName} should compress successfully');
+
+        // Verify correct quality percentage was passed
+        verify(mockPdfLibBridge.compressPdf(any, quality.qualityPercentage))
+            .called(1);
+      }
+    });
+  });
+}

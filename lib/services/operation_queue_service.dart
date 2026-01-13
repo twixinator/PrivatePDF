@@ -6,6 +6,7 @@ enum PdfOperationType {
   merge,
   split,
   protect,
+  compress,
 }
 
 /// Status of a queued operation
@@ -40,6 +41,8 @@ class QueuedOperation {
         return 'Aufteilen';
       case PdfOperationType.protect:
         return 'Schützen';
+      case PdfOperationType.compress:
+        return 'Komprimieren';
     }
   }
 

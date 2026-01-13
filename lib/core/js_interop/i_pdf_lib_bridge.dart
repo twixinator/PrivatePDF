@@ -40,4 +40,12 @@ abstract class IPdfLibBridge {
   ///
   /// @returns true if the JavaScript PDF library is loaded
   bool isAvailable();
+
+  /// Compress PDF by reducing image quality
+  ///
+  /// @param pdfBytes Original PDF bytes
+  /// @param quality Quality factor (0.0-1.0, where 1.0 is best quality)
+  /// @returns Compressed PDF bytes
+  /// @throws Exception if compression fails
+  Future<Uint8List> compressPdf(Uint8List pdfBytes, double quality);
 }

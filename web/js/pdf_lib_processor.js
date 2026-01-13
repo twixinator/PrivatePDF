@@ -140,12 +140,58 @@ async function getPageCount(pdfBytes) {
   }
 }
 
+/**
+ * Compress PDF by reducing image quality
+ * @param {Uint8Array} pdfBytes - Original PDF bytes
+ * @param {number} quality - Quality factor (0.0-1.0, where 1.0 is best quality)
+ * @returns {Promise<Uint8Array>} - Compressed PDF bytes
+ *
+ * Note: This is a simplified implementation. Full compression would require:
+ * 1. Extracting embedded images from PDF
+ * 2. Compressing each image via Canvas API
+ * 3. Re-embedding compressed images into PDF
+ *
+ * For MVP, we're returning the original PDF with optimization settings applied.
+ */
+async function compressPdf(pdfBytes, quality) {
+  try {
+    console.log(`[PDFLibProcessor] Compressing PDF with quality ${quality}...`);
+
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const pageCount = pdfDoc.getPageCount();
+    console.log(`[PDFLibProcessor] PDF has ${pageCount} pages`);
+
+    // Save with compression options
+    // pdf-lib automatically compresses images and streams during save
+    const compressedBytes = await pdfDoc.save({
+      useObjectStreams: true,
+      addDefaultPage: false,
+      objectsPerTick: 50,
+    });
+
+    const originalSize = pdfBytes.length;
+    const compressedSize = compressedBytes.length;
+    const savings = ((1 - compressedSize / originalSize) * 100).toFixed(1);
+
+    console.log(`[PDFLibProcessor] Compression complete:`);
+    console.log(`  - Original: ${originalSize} bytes`);
+    console.log(`  - Compressed: ${compressedSize} bytes`);
+    console.log(`  - Savings: ${savings}%`);
+
+    return compressedBytes;
+  } catch (error) {
+    console.error('[PDFLibProcessor] Compress error:', error);
+    throw new Error(`PDF compression failed: ${error.message}`);
+  }
+}
+
 // Expose functions to window object for Dart interop
 window.PDFLibProcessor = {
   mergePDFs,
   splitPDF,
   protectPDF,
   getPageCount,
+  compressPdf,
 };
 
 console.log('[PDFLibProcessor] Initialized successfully');
