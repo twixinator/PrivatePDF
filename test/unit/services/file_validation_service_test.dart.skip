@@ -21,7 +21,8 @@ void main() {
   setUp(() {
     mockBridge = MockIPdfLibBridge();
     service = FileValidationService(
-      maxFileSizeBytes: 5 * 1024 * 1024, // 5MB
+      maxFileSizeBytes: 100 * 1024 * 1024, // 100MB (Phase 7)
+      maxTotalOperationSize: 250 * 1024 * 1024, // 250MB (Phase 7)
       minMergeFiles: 2,
       maxMergeFiles: 10,
       minPasswordLength: 6,
@@ -70,10 +71,10 @@ void main() {
       expect(result.isValid, true);
     });
 
-    test('fails with oversized file', () {
+    test('fails with oversized file (>100MB)', () {
       final files = [
         TestHelpers.createMockPdfFileInfo('file1.pdf'),
-        TestHelpers.createMockPdfWithSize('large.pdf', 6), // 6MB
+        TestHelpers.createMockPdfWithSize('large.pdf', 101), // 101MB
       ];
       final result = service.validateMerge(files);
       expect(result.isValid, false);
@@ -137,8 +138,8 @@ void main() {
       expect(result.error, PdfOperationError.invalidPageRange);
     });
 
-    test('fails with oversized file', () {
-      final file = TestHelpers.createMockPdfWithSize('large.pdf', 6);
+    test('fails with oversized file (>100MB)', () {
+      final file = TestHelpers.createMockPdfWithSize('large.pdf', 101);
       final range = PageRange([1, 2]);
       final result = service.validateSplit(file, range);
       expect(result.isValid, false);
@@ -184,8 +185,8 @@ void main() {
       expect(result.error, PdfOperationError.weakPassword);
     });
 
-    test('fails with oversized file', () {
-      final file = TestHelpers.createMockPdfWithSize('large.pdf', 6);
+    test('fails with oversized file (>100MB)', () {
+      final file = TestHelpers.createMockPdfWithSize('large.pdf', 101);
       final result = service.validateProtect(file, 'SecurePass123');
       expect(result.isValid, false);
       expect(result.error, PdfOperationError.fileTooLarge);
@@ -251,13 +252,14 @@ void main() {
 
   group('convenience methods', () {
     test('formattedMaxFileSize returns correct string', () {
-      expect(service.formattedMaxFileSize, '5 MB');
+      expect(service.formattedMaxFileSize, '100 MB');
     });
 
     test('isFileSizeValid returns correct values', () {
       expect(service.isFileSizeValid(1024), true);
-      expect(service.isFileSizeValid(5 * 1024 * 1024), true);
-      expect(service.isFileSizeValid(6 * 1024 * 1024), false);
+      expect(service.isFileSizeValid(50 * 1024 * 1024), true);
+      expect(service.isFileSizeValid(100 * 1024 * 1024), true);
+      expect(service.isFileSizeValid(101 * 1024 * 1024), false);
     });
 
     test('isMergeCountValid returns correct values', () {
@@ -305,6 +307,70 @@ void main() {
       );
       expect(customService.isPasswordValid('1234567'), false);
       expect(customService.isPasswordValid('12345678'), true);
+    });
+  });
+
+  group('Phase 7: File Size Warnings and Limits', () {
+    test('getFileSizeWarningLevel returns correct levels', () {
+      expect(service.getFileSizeWarningLevel(5 * 1024 * 1024), 'none'); // 5MB
+      expect(service.getFileSizeWarningLevel(15 * 1024 * 1024), 'large'); // 15MB
+      expect(service.getFileSizeWarningLevel(60 * 1024 * 1024), 'very_large'); // 60MB
+      expect(service.getFileSizeWarningLevel(101 * 1024 * 1024), 'too_large'); // 101MB
+    });
+
+    test('requiresProgressIndicator returns correct values', () {
+      expect(service.requiresProgressIndicator(5 * 1024 * 1024), false); // 5MB
+      expect(service.requiresProgressIndicator(11 * 1024 * 1024), true); // 11MB
+      expect(service.requiresProgressIndicator(50 * 1024 * 1024), true); // 50MB
+    });
+
+    test('getTotalSize calculates correct total', () {
+      final files = [
+        TestHelpers.createMockPdfWithSize('file1.pdf', 10), // 10MB
+        TestHelpers.createMockPdfWithSize('file2.pdf', 20), // 20MB
+        TestHelpers.createMockPdfWithSize('file3.pdf', 30), // 30MB
+      ];
+      final totalSize = service.getTotalSize(files);
+      expect(totalSize, 60 * 1024 * 1024); // 60MB
+    });
+
+    test('isTotalSizeValid returns correct values', () {
+      final validFiles = [
+        TestHelpers.createMockPdfWithSize('file1.pdf', 80), // 80MB
+        TestHelpers.createMockPdfWithSize('file2.pdf', 80), // 80MB
+      ]; // Total: 160MB (under 250MB limit)
+
+      expect(service.isTotalSizeValid(validFiles), true);
+
+      final invalidFiles = [
+        TestHelpers.createMockPdfWithSize('file1.pdf', 90), // 90MB
+        TestHelpers.createMockPdfWithSize('file2.pdf', 90), // 90MB
+        TestHelpers.createMockPdfWithSize('file3.pdf', 90), // 90MB
+      ]; // Total: 270MB (over 250MB limit)
+
+      expect(service.isTotalSizeValid(invalidFiles), false);
+    });
+
+    test('validateMerge fails when total size exceeds limit', () {
+      final files = [
+        TestHelpers.createMockPdfWithSize('file1.pdf', 90), // 90MB
+        TestHelpers.createMockPdfWithSize('file2.pdf', 90), // 90MB
+        TestHelpers.createMockPdfWithSize('file3.pdf', 90), // 90MB
+      ]; // Total: 270MB (over 250MB limit)
+
+      final result = service.validateMerge(files);
+      expect(result.isValid, false);
+      expect(result.error, PdfOperationError.operationTooLarge);
+    });
+
+    test('validateMerge succeeds when total size is within limit', () {
+      final files = [
+        TestHelpers.createMockPdfWithSize('file1.pdf', 80), // 80MB
+        TestHelpers.createMockPdfWithSize('file2.pdf', 80), // 80MB
+      ]; // Total: 160MB (under 250MB limit)
+
+      final result = service.validateMerge(files);
+      expect(result.isValid, true);
     });
   });
 }

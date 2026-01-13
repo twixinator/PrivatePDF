@@ -58,7 +58,7 @@ class Strings {
   static const String mergeSelectFiles = 'Dateien auswählen';
   static const String mergeDragDrop = 'Oder ziehen Sie Dateien hierher';
   static const String mergeButton = 'Zusammenführen';
-  static const String mergeFreeTierNotice = 'Kostenlos bis 5MB pro Datei';
+  static const String mergeFreeTierNotice = '100% kostenlos - bis 100MB pro Datei';
   static const String mergeTotalSize = 'Gesamtgröße';
   static const String mergeFileCount = 'Dateien';
 
@@ -96,7 +96,9 @@ class Strings {
   static const String errorGeneric =
       'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
   static const String errorFileTooLarge =
-      'Datei zu groß. Die maximale Größe beträgt 5MB (Pro: unbegrenzt).';
+      'Datei zu groß. Die maximale Größe beträgt 100MB pro Datei.';
+  static const String errorOperationTooLarge =
+      'Gesamtgröße zu groß. Die maximale kombinierte Größe beträgt 250MB.';
   static const String errorInvalidPdf =
       'Ungültige PDF-Datei. Bitte wählen Sie eine gültige PDF aus.';
   static const String errorNotEnoughFiles =
@@ -112,7 +114,7 @@ class Strings {
   static const String pricingFreeTier = 'Kostenlos';
   static const String pricingFreePrice = '€0.00';
   static const String pricingFreeFeature1 = 'Alle Tools';
-  static const String pricingFreeFeature2 = 'Bis 5MB pro Datei';
+  static const String pricingFreeFeature2 = 'Bis 100MB pro Datei';
   static const String pricingFreeFeature3 = 'Keine Registrierung';
 
   static const String pricingProTier = 'Pro';
@@ -132,7 +134,7 @@ class Strings {
       'Absolut. Ihre Dateien werden niemals hochgeladen. Alles passiert lokal in Ihrem Browser.';
   static const String pricingFaqQ3 = 'Kann ich testen?';
   static const String pricingFaqA3 =
-      'Ja! Die kostenlose Version bietet alle Features mit einem 5MB-Limit pro Datei.';
+      'Ja! Die kostenlose Version bietet alle Features mit einem 100MB-Limit pro Datei.';
 
   // Buttons
   static const String buttonBack = 'Zurück';
@@ -182,4 +184,16 @@ class Strings {
   static const String mergeMultipleAllowed = 'Mehrere PDFs gleichzeitig möglich';
   static const String mergeMinimumRequired = 'Mindestens 2 PDFs erforderlich';
   static const String mergeMaximumAllowed = 'Maximal 10 PDFs erlaubt';
+
+  // File Size Warnings (Phase 7: Progressive Warning System)
+  static const String warningLargeFile =
+      'Große Datei erkannt (>10MB). Die Verarbeitung kann etwas länger dauern.';
+  static const String warningVeryLargeFile =
+      'Sehr große Datei erkannt (>50MB). Die Verarbeitung kann länger dauern.';
+  static const String warningFileTooLarge =
+      'Datei zu groß. Maximum: 100MB';
+  static const String warningOperationTooLarge =
+      'Gesamtgröße zu groß. Maximum: 250MB kombiniert';
+  static const String infoProcessingLargeFile =
+      'Große Datei wird verarbeitet. Bitte haben Sie Geduld...';
 }

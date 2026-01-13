@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Bash(dir:*)",
-      "Bash(flutter --version:*)"
+      "Bash(flutter --version:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(flutter test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd legal and contact pages with navigation\n\nImplements missing Impressum, Datenschutz, AGB, and Kontakt pages\nthat were previously non-functional in the footer. These pages are\nlegally required in Germany \\(§5 TMG, DSGVO compliance\\) and provide\nessential user information.\n\nCreated reusable LegalPageScaffold for consistent editorial design\nacross all static pages. All pages include clear placeholder sections\nwith TODO markers for filling in actual legal content.\n\nChanges:\n- Add 4 new pages: Impressum, Datenschutz, AGB, Kontakt\n- Add LegalPageScaffold widget with helper components\n- Add routes to main.dart for all legal pages\n- Update footer navigation to link to actual pages\n- Remove TODO comments from app_footer.dart\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(flutter build:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)",
+      "Bash(timeout 60 flutter test:*)"
     ]
   }
 }

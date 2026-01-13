@@ -18,7 +18,18 @@ void main() {
       );
       expect(
         PdfOperationError.fileTooLarge.message,
-        contains('5 MB'),
+        contains('100 MB'),
+      );
+    });
+
+    test('operationTooLarge has German message (Phase 7)', () {
+      expect(
+        PdfOperationError.operationTooLarge.message,
+        contains('Gesamtgröße zu groß'),
+      );
+      expect(
+        PdfOperationError.operationTooLarge.message,
+        contains('250 MB'),
       );
     });
 
@@ -119,6 +130,7 @@ void main() {
     test('user input errors are recoverable', () {
       expect(PdfOperationError.invalidFile.isRecoverable, true);
       expect(PdfOperationError.fileTooLarge.isRecoverable, true);
+      expect(PdfOperationError.operationTooLarge.isRecoverable, true); // Phase 7
       expect(PdfOperationError.insufficientFiles.isRecoverable, true);
       expect(PdfOperationError.tooManyFiles.isRecoverable, true);
       expect(PdfOperationError.insufficientPages.isRecoverable, true);
@@ -137,12 +149,13 @@ void main() {
 
   group('PdfOperationError enum values', () {
     test('all error types exist', () {
-      expect(PdfOperationError.values, hasLength(12));
+      expect(PdfOperationError.values, hasLength(13)); // Phase 7: Added operationTooLarge
       expect(
         PdfOperationError.values,
         containsAll([
           PdfOperationError.invalidFile,
           PdfOperationError.fileTooLarge,
+          PdfOperationError.operationTooLarge, // Phase 7: New error type
           PdfOperationError.insufficientFiles,
           PdfOperationError.tooManyFiles,
           PdfOperationError.insufficientPages,
@@ -164,7 +177,7 @@ void main() {
         expect(error.code, isNotEmpty);
         count++;
       }
-      expect(count, 12);
+      expect(count, 13); // Phase 7: Updated count
     });
   });
 }

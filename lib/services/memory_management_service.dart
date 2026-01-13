@@ -185,6 +185,7 @@ class MemoryManagementService extends ChangeNotifier {
       'totalTrackedMB': totalTrackedMB,
       'activeOperations': activeOperationCount,
       'totalAllocations': allocationCount,
+      'memoryPressure': getMemoryPressureLevel(),
       'operationBreakdown': _allocationsByOperation.map(
         (operationId, allocations) => MapEntry(
           operationId,
@@ -205,6 +206,52 @@ class MemoryManagementService extends ChangeNotifier {
         ),
       ),
     };
+  }
+
+  /// Get memory pressure level (Phase 7: Memory Pressure Detection)
+  /// Returns: 'low', 'moderate', 'high', or 'critical'
+  String getMemoryPressureLevel() {
+    final trackedMB = totalTrackedBytes / 1024 / 1024;
+
+    if (trackedMB > 500) {
+      return 'critical'; // Over 500MB tracked - critical memory pressure
+    } else if (trackedMB > 250) {
+      return 'high'; // 250-500MB - high memory pressure
+    } else if (trackedMB > 100) {
+      return 'moderate'; // 100-250MB - moderate memory pressure
+    }
+    return 'low'; // Under 100MB - low memory pressure
+  }
+
+  /// Check if memory pressure is high (Phase 7)
+  bool get isMemoryPressureHigh {
+    final level = getMemoryPressureLevel();
+    return level == 'high' || level == 'critical';
+  }
+
+  /// Get memory pressure warning message
+  String? getMemoryPressureWarning() {
+    switch (getMemoryPressureLevel()) {
+      case 'critical':
+        return 'Kritische Speicherauslastung. Bitte schließen Sie andere Tabs oder reduzieren Sie die Dateigröße.';
+      case 'high':
+        return 'Hohe Speicherauslastung. Die Verarbeitung kann langsamer sein.';
+      case 'moderate':
+        return 'Moderate Speicherauslastung. Überwachung aktiv.';
+      default:
+        return null;
+    }
+  }
+
+  /// Suggest garbage collection hint for large operations (Phase 7)
+  /// This doesn't actually force GC but can be used to trigger cleanup logic
+  void suggestGarbageCollection() {
+    if (Environment.enableDebugLogging) {
+      print('[MemoryManagement] Garbage collection hint suggested (pressure: ${getMemoryPressureLevel()})');
+    }
+    // Note: Dart VM handles garbage collection automatically
+    // This method serves as a hook for additional cleanup logic
+    notifyListeners();
   }
 
   /// Print memory report to console (debug only)

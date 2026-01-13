@@ -62,7 +62,7 @@ class DatenschutzPage extends StatelessWidget {
               'Art der durchgeführten PDF-Operation (Zusammenführen, Aufteilen, Schützen)',
               'Anzahl der verarbeiteten Dateien',
               'Zeitstempel der Operation',
-              'Dateigrößenkategorie (z.B. "1-5MB")',
+              'Dateigrößenkategorie (z.B. "10-50MB", "50-100MB")',
               'Keine personenbezogenen Daten oder IP-Adressen',
             ],
             isPlaceholder: false,

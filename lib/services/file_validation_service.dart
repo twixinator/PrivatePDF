@@ -10,13 +10,15 @@ import '../core/js_interop/pdf_lib_bridge.dart';
 /// Encapsulates all validation business rules with advanced integrity checks
 class FileValidationService {
   final int maxFileSizeBytes;
+  final int maxTotalOperationSize;
   final int minMergeFiles;
   final int maxMergeFiles;
   final int minPasswordLength;
   final IPdfLibBridge _pdfLibBridge;
 
   FileValidationService({
-    this.maxFileSizeBytes = 5 * 1024 * 1024, // 5MB default for free tier
+    this.maxFileSizeBytes = 100 * 1024 * 1024, // 100MB default (Phase 7: Post-MVP Enhancement)
+    this.maxTotalOperationSize = 250 * 1024 * 1024, // 250MB total operation limit
     this.minMergeFiles = 2,
     this.maxMergeFiles = 10,
     this.minPasswordLength = 6,
@@ -41,6 +43,12 @@ class FileValidationService {
       if (!fileValidation.isValid) {
         return fileValidation;
       }
+    }
+
+    // Check total operation size (Phase 7: 250MB combined limit)
+    final totalSize = files.fold<int>(0, (sum, file) => sum + file.sizeBytes);
+    if (totalSize > maxTotalOperationSize) {
+      return ValidationResult.failure(PdfOperationError.operationTooLarge);
     }
 
     return ValidationResult.success();
@@ -119,6 +127,34 @@ class FileValidationService {
   /// Check if password is valid (convenience method)
   bool isPasswordValid(String password) {
     return password.length >= minPasswordLength;
+  }
+
+  /// Get file size warning level for progressive warnings (Phase 7)
+  /// Returns: 'none', 'large', 'very_large', or 'too_large'
+  String getFileSizeWarningLevel(int sizeBytes) {
+    if (sizeBytes > maxFileSizeBytes) {
+      return 'too_large'; // Over 100MB
+    } else if (sizeBytes > 50 * 1024 * 1024) {
+      return 'very_large'; // 50-100MB: Warning about processing time
+    } else if (sizeBytes > 10 * 1024 * 1024) {
+      return 'large'; // 10-50MB: Show progress indicators
+    }
+    return 'none'; // Under 10MB: No warning
+  }
+
+  /// Check if operation requires progress indicator (>10MB)
+  bool requiresProgressIndicator(int sizeBytes) {
+    return sizeBytes > 10 * 1024 * 1024;
+  }
+
+  /// Get total size of multiple files
+  int getTotalSize(List<PdfFileInfo> files) {
+    return files.fold<int>(0, (sum, file) => sum + file.sizeBytes);
+  }
+
+  /// Check if total operation size is valid
+  bool isTotalSizeValid(List<PdfFileInfo> files) {
+    return getTotalSize(files) <= maxTotalOperationSize;
   }
 
   /// Advanced PDF integrity validation

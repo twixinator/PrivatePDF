@@ -122,7 +122,7 @@ class _PdfDropZoneState extends State<PdfDropZone> {
                     ),
                   ),
                   child: Text(
-                    'Kostenlos: Max. 10 Dateien à 5 MB',
+                    'Kostenlos: Max. 10 Dateien à 100 MB',
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: AppTheme.secondary,
                       fontWeight: FontWeight.w600,

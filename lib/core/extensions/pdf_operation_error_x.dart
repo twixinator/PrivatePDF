@@ -10,20 +10,32 @@ extension PdfOperationErrorX on PdfOperationError {
     switch (this) {
       case PdfOperationError.fileTooLarge:
         return EnhancedErrorMessage.fileSizeLimit(
-          fileSizeMB: 5.0, // Will be overridden with actual size
-          limitMB: 5.0,
+          fileSizeMB: 100.0, // Phase 7: Updated to 100MB
+          limitMB: 100.0,
           actions: [
-            ErrorAction.navigateRoute(
-              label: 'Auf Pro upgraden',
-              route: '/pricing',
-              icon: Icons.upgrade,
-            ),
             ErrorAction.documentation(
               label: 'Dateien komprimieren',
               url: 'https://help.privatpdf.de/compress',
             ),
             ErrorAction.dismiss(),
           ],
+        );
+
+      case PdfOperationError.operationTooLarge:
+        return EnhancedErrorMessage(
+          title: 'Gesamtgröße zu groß',
+          userMessage:
+              'Die kombinierte Größe aller Dateien überschreitet das Limit von 250 MB. '
+              'Bitte reduzieren Sie die Anzahl oder Größe der Dateien.',
+          severity: ErrorSeverity.warning,
+          suggestedActions: [
+            ErrorAction.documentation(
+              label: 'Dateien komprimieren',
+              url: 'https://help.privatpdf.de/compress',
+            ),
+            ErrorAction.dismiss(),
+          ],
+          icon: Icons.folder_off,
         );
 
       case PdfOperationError.invalidFile:
@@ -205,6 +217,7 @@ extension PdfOperationErrorX on PdfOperationError {
   ErrorSeverity get severity {
     switch (this) {
       case PdfOperationError.fileTooLarge:
+      case PdfOperationError.operationTooLarge: // Phase 7: Added operationTooLarge
       case PdfOperationError.insufficientFiles:
       case PdfOperationError.tooManyFiles:
       case PdfOperationError.insufficientPages:

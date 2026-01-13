@@ -3,6 +3,7 @@ enum PdfOperationError {
   // File validation errors
   invalidFile,
   fileTooLarge,
+  operationTooLarge, // Phase 7: Total operation size exceeds limit
   insufficientFiles,
   tooManyFiles,
 
@@ -28,7 +29,9 @@ enum PdfOperationError {
       case PdfOperationError.invalidFile:
         return 'Ungültige PDF-Datei. Bitte wähle eine gültige PDF-Datei.';
       case PdfOperationError.fileTooLarge:
-        return 'Datei zu groß. Die maximale Dateigröße beträgt 5 MB.';
+        return 'Datei zu groß. Die maximale Dateigröße beträgt 100 MB.';
+      case PdfOperationError.operationTooLarge:
+        return 'Gesamtgröße zu groß. Die maximale kombinierte Größe beträgt 250 MB.';
       case PdfOperationError.insufficientFiles:
         return 'Mindestens 2 PDF-Dateien erforderlich.';
       case PdfOperationError.tooManyFiles:
@@ -62,6 +65,7 @@ enum PdfOperationError {
     switch (this) {
       case PdfOperationError.invalidFile:
       case PdfOperationError.fileTooLarge:
+      case PdfOperationError.operationTooLarge:
       case PdfOperationError.insufficientFiles:
       case PdfOperationError.tooManyFiles:
       case PdfOperationError.insufficientPages:
