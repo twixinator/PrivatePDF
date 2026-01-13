@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "buildCommand": "flutter build web --release",
+  "outputDirectory": "build/web",
+  "framework": "flutter",
   "public": false,
   "headers": [
     {
