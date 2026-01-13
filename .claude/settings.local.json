@@ -14,7 +14,8 @@
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
       "Bash(gh run watch:*)",
-      "Bash(timeout 60 flutter test:*)"
+      "Bash(timeout 60 flutter test:*)",
+      "Bash(grep:*)"
     ]
   }
 }

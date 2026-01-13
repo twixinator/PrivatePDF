@@ -298,7 +298,18 @@ class _ToolSelectionSection extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: Spacing.xl),
-                            Expanded(child: SizedBox.shrink()),
+                            Expanded(
+                              child: FadeInWidget(
+                                delay: const Duration(milliseconds: 400),
+                                child: _ToolCard(
+                                  title: Strings.ocrToolTitle,
+                                  description: Strings.ocrToolDesc,
+                                  icon: Icons.text_fields_outlined,
+                                  route: '/ocr',
+                                  accentColor: Color(0xFF7F8E6B),
+                                ),
+                              ),
+                            ),
                             SizedBox(width: Spacing.xl),
                             Expanded(child: SizedBox.shrink()),
                           ],
@@ -349,6 +360,17 @@ class _ToolSelectionSection extends StatelessWidget {
                             icon: Icons.compress,
                             route: '/compress',
                             accentColor: Color(0xFF8E6B7F),
+                          ),
+                        ),
+                        SizedBox(height: Spacing.lg),
+                        FadeInWidget(
+                          delay: const Duration(milliseconds: 400),
+                          child: _ToolCard(
+                            title: Strings.ocrToolTitle,
+                            description: Strings.ocrToolDesc,
+                            icon: Icons.text_fields_outlined,
+                            route: '/ocr',
+                            accentColor: Color(0xFF7F8E6B),
                           ),
                         ),
                       ],

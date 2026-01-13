@@ -2,7 +2,7 @@
 
 ## Running Tests
 
-### Standard Test Run (139 tests)
+### Standard Test Run (196 tests)
 ```bash
 flutter test
 ```
@@ -19,6 +19,9 @@ flutter test --platform chrome test/unit/services/file_validation_service_test.d
 
 # Run the web-specific compression service test
 flutter test --platform chrome test/unit/services/pdf_compression_service_test.dart.skip
+
+# Run the web-specific OCR service test
+flutter test --platform chrome test/unit/services/ocr_service_test.dart.skip
 ```
 
 **Note**: Files have a `.skip` extension to prevent them from being picked up by the default test runner (which runs on VM and would fail to compile web-specific imports).
@@ -26,17 +29,22 @@ flutter test --platform chrome test/unit/services/pdf_compression_service_test.d
 ## Test Coverage
 
 Current coverage:
-- **Total**: 139 tests passing
+- **Total**: 196 tests passing
   - Phase 7 (File Size Limits): Covered in validation tests
-  - Phase 10.2 (PDF Compression): 47 new tests
+  - Phase 10.2 (PDF Compression): 47 tests
     - CompressionQuality: 17 tests
     - CompressionResult: 30 tests
     - PdfCompressionService: Web-specific tests (.skip)
+  - Phase 10.1 (OCR): 57 new tests
+    - OcrLanguage: 19 tests
+    - OcrResult: 38 tests
+    - OcrService: Web-specific tests (.skip)
 - **Critical Components**: 100% coverage
   - PageRange parsing and validation
   - PDF operation error handling
   - Validation results
   - Compression models (quality, results)
+  - OCR models (language, results)
 
 ### Coverage Targets
 - Overall: 80%+
@@ -45,7 +53,7 @@ Current coverage:
 ## CI/CD Integration
 
 The GitHub Actions workflow runs:
-1. VM tests: `flutter test` (139 tests)
+1. VM tests: `flutter test` (196 tests)
 2. Code analysis: `flutter analyze`
 3. Build verification: `flutter build web --release`
 

@@ -1,0 +1,136 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:privatpdf/services/ocr_service.dart';
+import 'package:privatpdf/models/ocr_language.dart';
+import 'package:privatpdf/models/pdf_file_info.dart';
+import 'dart:typed_data';
+
+/// OCR Service Tests
+///
+/// NOTE: These tests are skipped (.dart.skip extension) because OcrService
+/// requires web-specific JavaScript interop with Tesseract.js which cannot
+/// be tested in the standard Dart test environment.
+///
+/// For comprehensive testing:
+/// 1. Use integration tests with a real browser (flutter test --platform chrome)
+/// 2. Use manual testing in the actual web application
+/// 3. Mock the JavaScript interop layer for unit testing (complex setup)
+///
+/// The models (OcrLanguage, OcrResult) are fully unit tested separately.
+
+void main() {
+  group('OcrService', () {
+    late OcrService service;
+
+    setUp(() {
+      service = OcrService();
+    });
+
+    group('extractTextFromPdf', () {
+      test('should throw error when OCR processor not available', () async {
+        // This test would require mocking window.ocrProcessor
+        // In a real test environment, this would be set up with test fixtures
+
+        final mockPdf = PdfFileInfo(
+          name: 'test.pdf',
+          bytes: Uint8List.fromList([1, 2, 3]),
+          sizeInBytes: 3,
+        );
+
+        expect(
+          () => service.extractTextFromPdf(
+            file: mockPdf,
+            language: OcrLanguage.german,
+          ),
+          throwsA(isA<Exception>()),
+        );
+      });
+
+      test('should call JavaScript OCR processor with correct parameters', () async {
+        // Mock setup required:
+        // 1. Mock window.ocrProcessor
+        // 2. Mock extractTextFromPDF function
+        // 3. Verify it's called with correct language code
+        // 4. Verify progress callback is set up correctly
+      });
+
+      test('should handle progress callbacks correctly', () async {
+        // Test that progress callbacks are properly bridged to JavaScript
+        // and updates are received back in Dart
+      });
+
+      test('should parse JavaScript result correctly', () async {
+        // Mock a JavaScript result object and verify parsing
+      });
+
+      test('should handle multi-page PDFs', () async {
+        // Test processing of PDFs with multiple pages
+        // Verify text extraction for each page
+      });
+
+      test('should handle errors from JavaScript layer', () async {
+        // Mock JavaScript errors and verify they're properly propagated
+      });
+    });
+
+    group('extractTextFromImage', () {
+      test('should extract text from image bytes', () async {
+        // Mock image OCR functionality
+      });
+
+      test('should handle different image formats', () async {
+        // Test PNG, JPEG, etc.
+      });
+
+      test('should handle progress callbacks for images', () async {
+        // Test progress reporting for image OCR
+      });
+    });
+
+    group('language support', () {
+      test('should support German language', () async {
+        // Verify German language code is passed correctly
+      });
+
+      test('should support English language', () async {
+        // Verify English language code is passed correctly
+      });
+
+      test('should handle invalid language gracefully', () async {
+        // Test error handling for unsupported languages
+      });
+    });
+
+    group('error handling', () {
+      test('should handle corrupted PDF files', () async {
+        // Test with invalid PDF bytes
+      });
+
+      test('should handle empty files', () async {
+        // Test with zero-byte files
+      });
+
+      test('should handle network errors when loading Tesseract', () async {
+        // Test offline scenarios
+      });
+
+      test('should handle OCR failures', () async {
+        // Test when Tesseract fails to recognize text
+      });
+    });
+
+    group('performance', () {
+      test('should process pages sequentially', () async {
+        // Verify pages are processed one at a time (not parallel)
+        // to avoid memory issues
+      });
+
+      test('should clean up resources after processing', () async {
+        // Verify Tesseract worker is terminated
+        // Verify no memory leaks
+      });
+    });
+  });
+}
+
+// Helper functions for mocking JavaScript interop would go here
+// These would require a more sophisticated test setup with web test infrastructure

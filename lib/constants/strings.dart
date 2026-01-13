@@ -102,6 +102,37 @@ class Strings {
   static const String compressPercentageSaved = 'Ersparnis';
   static const String compressSuccess = 'PDF erfolgreich komprimiert!';
 
+  // OCR Page (Phase 10.1: Optical Character Recognition)
+  static const String ocrToolTitle = 'OCR - Text erkennen';
+  static const String ocrToolDesc = 'Text aus Bildern und gescannten PDFs extrahieren';
+  static const String ocrPageTitle = 'OCR - Text erkennen';
+  static const String ocrInstructions =
+      'Laden Sie eine PDF-Datei mit gescannten Seiten hoch, um den Text zu extrahieren.';
+  static const String ocrSelectFile = 'PDF auswählen';
+  static const String ocrLanguageLabel = 'Sprache wählen';
+  static const String ocrLanguageGerman = 'Deutsch (DEU)';
+  static const String ocrLanguageEnglish = 'Englisch (ENG)';
+  static const String ocrButton = 'Text erkennen';
+  static const String ocrProcessing = 'Verarbeite Seite {current} von {total}...';
+  static const String ocrProcessingStatus = 'Status: {status}';
+  static const String ocrSuccess = 'Text erfolgreich extrahiert!';
+  static const String ocrResultTitle = 'Erkannter Text:';
+  static const String ocrCopyButton = 'In Zwischenablage kopieren';
+  static const String ocrDownloadButton = 'Als Text-Datei herunterladen';
+  static const String ocrSearchLabel = 'Suchen im Text...';
+  static const String ocrSearchPlaceholder = 'Suchbegriff eingeben';
+  static const String ocrNoResults = 'Kein Text gefunden';
+  static const String ocrWarningTime =
+      'Hinweis: Die Texterkennung kann bei großen Dokumenten einige Minuten dauern.';
+  static const String ocrEstimatedTime = 'Geschätzte Zeit: ca. {seconds} Sekunden pro Seite';
+  static const String ocrConfidence = 'Genauigkeit: {percent}%';
+  static const String ocrPageCount = '{count} Seiten verarbeitet';
+  static const String ocrProcessingTime = 'Verarbeitungszeit: {time}';
+  static const String ocrCopiedToClipboard = 'Text in Zwischenablage kopiert!';
+  static const String ocrLanguageHelper = 'Wählen Sie die Sprache des Dokuments für bessere Ergebnisse';
+  static const String ocrQualityTip = 'Tipp: Hochauflösende Scans liefern bessere Ergebnisse';
+  static const String ocrNewScan = 'Neue Datei scannen';
+
   // Processing States
   static const String processingTitle = 'Verarbeitung läuft...';
   static const String processingMessage = 'Verarbeitung auf Ihrem Computer...';
