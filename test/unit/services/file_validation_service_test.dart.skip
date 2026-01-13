@@ -9,6 +9,11 @@ import '../../mocks/mocks.mocks.dart';
 
 /// FileValidationService tests
 /// Target: 90%+ code coverage (CRITICAL component)
+///
+/// Note: This test requires web platform due to dart:js dependencies.
+/// Run with: flutter test --platform chrome test/unit/services/file_validation_service_test.dart
+@Tags(['web-only'])
+@TestOn('browser')
 void main() {
   late FileValidationService service;
   late MockIPdfLibBridge mockBridge;

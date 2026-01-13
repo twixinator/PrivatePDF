@@ -1,0 +1,14 @@
+# Test configuration for PrivatPDF
+#
+# Web-specific tests require browser platform due to dart:html, dart:js dependencies
+# These tests are excluded from default runs and must be run explicitly with:
+#   flutter test --platform chrome test/unit/services/file_validation_service_test.dart
+
+# Default platform for VM-compatible tests
+platforms: [vm]
+
+# Exclude web-specific tests from default run
+exclude_tags: web-only
+
+# Test timeouts
+timeout: 30s
