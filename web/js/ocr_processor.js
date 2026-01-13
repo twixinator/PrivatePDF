@@ -7,7 +7,6 @@
 
 // 🔒 SECURITY: Using jsDelivr CDN for Tesseract.js with specific version
 import Tesseract from 'https://cdn.jsdelivr.net/npm/tesseract.js@5/+esm';
-import { PDFDocument } from 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm';
 
 /**
  * Progress callback type
@@ -40,10 +39,15 @@ async function extractTextFromPDF(pdfBytes, language, progressCallback) {
     console.log(`[OCRProcessor] Starting OCR with language: ${language}`);
     console.log(`[OCRProcessor] PDF size: ${pdfBytes.length} bytes`);
 
-    // Load PDF to extract pages as images
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    const totalPages = pdfDoc.getPageCount();
-    console.log(`[OCRProcessor] PDF has ${totalPages} pages`);
+    // Load PDF document once and reuse it for all page renders
+    // This avoids the issue where second PDF load fails
+    if (!window.pdfRenderer || !window.pdfRenderer.loadPdfDocument) {
+      throw new Error('PDF renderer module not loaded');
+    }
+
+    const pdfDocument = await window.pdfRenderer.loadPdfDocument(pdfBytes);
+    const totalPages = pdfDocument.numPages;
+    console.log(`[OCRProcessor] PDF loaded successfully: ${totalPages} pages`);
 
     if (totalPages === 0) {
       throw new Error('PDF has no pages');
@@ -83,24 +87,10 @@ async function extractTextFromPDF(pdfBytes, language, progressCallback) {
       }
 
       try {
-        // Extract page as image data URL
-        // Note: This is a simplified approach. For production, you'd render the PDF page to canvas
-        // and extract image data. Since pdf-lib doesn't have direct rendering, we'll use a workaround.
-
-        // Create a single-page PDF for this page
-        const singlePagePdf = await PDFDocument.create();
-        const [copiedPage] = await singlePagePdf.copyPages(pdfDoc, [pageIndex]);
-        singlePagePdf.addPage(copiedPage);
-        const singlePageBytes = await singlePagePdf.save();
-
-        // For actual OCR, we need to render the PDF to an image
-        // This requires pdf.js or similar. For now, we'll use a placeholder approach.
-        // In a real implementation, you'd use pdf.js to render to canvas and get image data.
+        // Render PDF page to image using the already-loaded PDF document
+        const imageDataUrl = await renderPdfPageFromDocument(pdfDocument, pageIndex);
 
         // Perform OCR on the rendered page image
-        // Note: This is where you'd pass the actual image data from the rendered PDF page
-        const imageDataUrl = await renderPdfPageToImage(singlePageBytes, pageIndex);
-
         const { data: { text, confidence } } = await worker.recognize(imageDataUrl);
 
         console.log(`[OCRProcessor] Page ${pageNumber} OCR complete. Confidence: ${confidence.toFixed(2)}%`);
@@ -120,6 +110,12 @@ async function extractTextFromPDF(pdfBytes, language, progressCallback) {
     // Cleanup
     await worker.terminate();
     console.log(`[OCRProcessor] Tesseract worker terminated`);
+
+    // Clean up PDF document
+    if (pdfDocument) {
+      await pdfDocument.destroy();
+      console.log(`[OCRProcessor] PDF document destroyed`);
+    }
 
     const processingTimeMs = Date.now() - startTime;
     console.log(`[OCRProcessor] OCR complete in ${processingTimeMs}ms`);
@@ -144,27 +140,34 @@ async function extractTextFromPDF(pdfBytes, language, progressCallback) {
 }
 
 /**
- * Render a PDF page to an image (canvas)
- * This is a helper function that would use pdf.js to render the PDF to canvas
- * @param {Uint8Array} pdfBytes - Single page PDF bytes
+ * Render a PDF page to an image using an already-loaded PDF document
+ * @param {PDFDocumentProxy} pdfDocument - Loaded PDF.js document
  * @param {number} pageIndex - Page index (0-indexed)
- * @returns {Promise<string>} - Image data URL
+ * @returns {Promise<string>} - Image data URL (PNG format at 2x scale)
  */
-async function renderPdfPageToImage(pdfBytes, pageIndex) {
-  // This is a placeholder. In a production implementation, you would:
-  // 1. Use pdf.js to load the PDF
-  // 2. Render the page to a canvas at high resolution (for better OCR)
-  // 3. Convert canvas to image data URL
-  // 4. Return the data URL
+async function renderPdfPageFromDocument(pdfDocument, pageIndex) {
+  // Check if PDF renderer is available
+  if (!window.pdfRenderer || !window.pdfRenderer.renderPageFromDocument) {
+    throw new Error('PDF renderer module not loaded. Ensure pdf_renderer.js is included before ocr_processor.js');
+  }
 
-  // For now, we'll throw an error to indicate this needs proper implementation
-  // when integrating with the actual application
+  try {
+    console.log(`[OCRProcessor] Rendering page ${pageIndex} to image...`);
 
-  console.warn('[OCRProcessor] renderPdfPageToImage is a placeholder. Needs pdf.js integration.');
+    // Use PDF.js renderer with 2x scale for high-quality OCR
+    const imageDataUrl = await window.pdfRenderer.renderPageFromDocument(pdfDocument, pageIndex, {
+      scale: 2.0,
+      format: 'png',
+      backgroundColor: '#ffffff'
+    });
 
-  // Temporary: Create a data URL that Tesseract can process
-  // In reality, this would be the actual rendered PDF page
-  throw new Error('PDF rendering not yet implemented. Requires pdf.js integration.');
+    console.log(`[OCRProcessor] Page ${pageIndex} rendered successfully`);
+    return imageDataUrl;
+
+  } catch (error) {
+    console.error(`[OCRProcessor] Failed to render page ${pageIndex}:`, error);
+    throw new Error(`Failed to render PDF page: ${error.message}`);
+  }
 }
 
 /**
