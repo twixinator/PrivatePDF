@@ -22,6 +22,8 @@ class AppTheme {
   static const textSecondary = _graphite;
   static const textMuted = _slate;
   static const border = _sand;
+  static const charcoal = _charcoal; // Public accessor for dark text
+  static const cream = _cream; // Public accessor for background
   static const error = Color(0xFFC85A54);
   static const success = Color(0xFF6B8E7F);
   static const warning = Color(0xFFD9A441);

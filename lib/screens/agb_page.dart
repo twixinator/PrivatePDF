@@ -128,7 +128,7 @@ class AgbPage extends StatelessWidget {
             title: 'Gewährleistungsausschluss',
             content: 'TODO: Gewährleistungsausschluss bei kostenlosem Service.\n\n'
                 'Beispiel: "Da PrivatPDF kostenlos angeboten wird, sind Gewährleistungsansprüche ausgeschlossen, '
-                'soweit gesetzlich zulässig. Der Service wird bereitgestellt, wie er ist ('as is')."',
+                'soweit gesetzlich zulässig. Der Service wird bereitgestellt, wie er ist (\'as is\')."',
             isPlaceholder: true,
           ),
 
