@@ -51,6 +51,12 @@ jobs:
           fi
           echo "Build verification successful"
 
+      - name: Copy Vercel configuration
+        run: |
+          echo "Copying vercel.json to build/web for deployment..."
+          cp vercel.json build/web/vercel.json
+          echo "✅ Vercel configuration copied"
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
