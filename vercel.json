@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "public": false,
   "headers": [
     {
       "source": "/assets/(.*)",
