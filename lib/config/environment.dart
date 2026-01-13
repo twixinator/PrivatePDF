@@ -21,16 +21,26 @@ class Environment {
   /// App version
   static const String version = '0.1.0';
 
-  /// Maximum file size for free tier (in bytes)
-  static const int maxFileSizeFree = 5 * 1024 * 1024; // 5MB
+  /// Maximum file size (in bytes)
+  /// Updated 2026-01-13: Increased from 5MB to 100MB (Phase 7: Post-MVP Enhancement)
+  /// Note: PrivatPDF is 100% free - no paid tiers
+  static const int maxFileSizeFree = 100 * 1024 * 1024; // 100MB
 
-  /// Maximum file size for pro tier (in bytes)
+  /// Maximum total operation size (in bytes)
+  /// For operations with multiple files (e.g., merge), this limits the combined size
+  static const int maxTotalOperationSize = 250 * 1024 * 1024; // 250MB
+
+  /// Legacy: Maximum file size for pro tier (in bytes) - NOT CURRENTLY USED
+  /// Kept for future reference if tiered model is reconsidered
+  @Deprecated('PrivatPDF is now 100% free with no paid tiers')
   static const int maxFileSizePro = 100 * 1024 * 1024; // 100MB
 
-  /// Maximum number of files for merge (free tier)
+  /// Maximum number of files for merge operation
+  /// Kept at reasonable limit (10) for browser memory constraints
   static const int maxMergeFilesFree = 10;
 
-  /// Maximum number of files for merge (pro tier)
+  /// Legacy: Maximum number of files for merge (pro tier) - NOT CURRENTLY USED
+  @Deprecated('PrivatPDF is now 100% free with no paid tiers')
   static const int maxMergeFilesPro = 50;
 
   /// Minimum password length
