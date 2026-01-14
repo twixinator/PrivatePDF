@@ -19,11 +19,13 @@ class AgbPage extends StatelessWidget {
           // Introduction
           const LegalSection(
             title: 'Geltungsbereich',
-            content: 'TODO: Einführung zu den AGB.\n\n'
-                'Beispiel: "Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung von PrivatPDF, '
-                'einem kostenlosen, browserbasierten PDF-Werkzeug. Mit der Nutzung der Website erklären Sie sich '
-                'mit diesen Bedingungen einverstanden."',
-            isPlaceholder: true,
+            content: 'Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung von PrivatPDF, '
+                'einer browserbasierten Webanwendung zur Bearbeitung von PDF-Dateien. Betreiber ist Oliver Raider, '
+                'Hinter den Gärten 2a, 86637 Wertingen, Deutschland.\n\n'
+                'Mit der Nutzung dieser Website erklären Sie sich mit diesen Bedingungen einverstanden. '
+                'Für die Nutzung von kostenpflichtigen Funktionen (Pro- und Business-Tarif) gelten ergänzend '
+                'die nachfolgenden Bestimmungen.',
+            isPlaceholder: false,
           ),
 
           // Service description
@@ -67,97 +69,132 @@ class AgbPage extends StatelessWidget {
           // User obligations
           const LegalSection(
             title: 'Pflichten des Nutzers',
-            content: 'TODO: Nutzerpflichten definieren.\n\n'
-                'Beispiel: Der Nutzer verpflichtet sich:',
-            isPlaceholder: true,
+            content: 'Der Nutzer verpflichtet sich:',
+            isPlaceholder: false,
           ),
           const LegalBulletList(
             items: [
-              'Die Website nicht für rechtswidrige Zwecke zu nutzen',
-              'Keine urheberrechtlich geschützten Inhalte ohne Erlaubnis zu verarbeiten',
-              'Die technische Infrastruktur der Website nicht zu beeinträchtigen',
-              'Keine automatisierten Zugriffe (Bots, Scraper) ohne Genehmigung durchzuführen',
+              'Die Website ausschließlich für rechtmäßige Zwecke zu nutzen',
+              'Keine urheberrechtlich geschützten oder anderweitig rechtswidrigen Inhalte ohne entsprechende Berechtigung zu verarbeiten',
+              'Die technische Infrastruktur der Website nicht zu beeinträchtigen oder zu überlasten',
+              'Keine automatisierten Zugriffe (Bots, Scraper, Crawler) ohne ausdrückliche schriftliche Genehmigung durchzuführen',
+              'Keine Sicherheitsmechanismen zu umgehen oder Schwachstellen auszunutzen',
+              'Die Dienste nicht für kommerzielle Zwecke zu nutzen, ohne einen entsprechenden Tarif (Pro/Business) zu erwerben',
             ],
-            isPlaceholder: true,
+            isPlaceholder: false,
           ),
 
           // Liability
           const LegalSection(
             title: 'Haftungsbeschränkung',
-            content: 'TODO: Haftungsausschluss formulieren.\n\n'
-                'Beispiel: "PrivatPDF wird kostenlos und "wie besehen" bereitgestellt. '
-                'Wir übernehmen keine Haftung für:"',
-            isPlaceholder: true,
+            content: 'Die kostenlose Nutzung von PrivatPDF erfolgt gemäß § 521 BGB (Schenkung) unentgeltlich. '
+                'Soweit gesetzlich zulässig, ist die Haftung für Schäden, die nicht auf Vorsatz oder grober Fahrlässigkeit beruhen, '
+                'ausgeschlossen. Dies gilt insbesondere für:',
+            isPlaceholder: false,
           ),
           const LegalBulletList(
             items: [
-              'Verlust oder Beschädigung von Dateien während der Verarbeitung',
-              'Unterbrechungen oder Ausfälle des Dienstes',
-              'Fehler in den verarbeiteten PDF-Dateien',
-              'Schäden durch fehlerhafte Nutzung',
+              'Verlust oder Beschädigung von Dateien während der client-seitigen Verarbeitung',
+              'Unterbrechungen oder Ausfälle des Dienstes aufgrund technischer Probleme',
+              'Fehler in den verarbeiteten PDF-Dateien oder Qualitätsverluste',
+              'Schäden durch fehlerhafte Nutzung oder unzureichende Browser-Kompatibilität',
+              'Datenverlust durch Browser-Abstürze oder Verbindungsabbrüche',
             ],
-            isPlaceholder: true,
+            isPlaceholder: false,
           ),
           const LegalSection(
             title: '',
-            content: 'TODO: Hinweis auf gesetzliche Haftung bei Vorsatz und grober Fahrlässigkeit.\n\n'
-                'Beispiel: "Die Haftung für Schäden aus der Verletzung von Leben, Körper oder Gesundheit '
-                'sowie bei Vorsatz und grober Fahrlässigkeit bleibt unberührt."',
-            isPlaceholder: true,
+            content: 'Unberührt bleiben Haftungsansprüche:\n\n'
+                '• bei Schäden aus der Verletzung von Leben, Körper oder Gesundheit,\n'
+                '• bei Vorsatz und grober Fahrlässigkeit,\n'
+                '• bei Verletzung wesentlicher Vertragspflichten (Kardinalpflichten), deren Erfüllung die ordnungsgemäße Durchführung des Vertrages erst ermöglicht,\n'
+                '• bei Ansprüchen nach dem Produkthaftungsgesetz.\n\n'
+                'Bei Verletzung wesentlicher Vertragspflichten ist die Haftung auf den vertragstypischen, vorhersehbaren Schaden beschränkt, '
+                'sofern nicht Vorsatz oder grobe Fahrlässigkeit vorliegt.\n\n'
+                'Für kostenpflichtige Tarife (Pro/Business): Die Haftung ist auf die Höhe der in den letzten 12 Monaten gezahlten Nutzungsgebühren beschränkt, '
+                'soweit gesetzlich zulässig.',
+            isPlaceholder: false,
           ),
 
           // Intellectual property
           const LegalSection(
-            title: 'Urheberrecht',
-            content: 'TODO: Urheberrechtshinweise.\n\n'
-                'Beispiel: "Alle Inhalte dieser Website (Design, Code, Texte) sind urheberrechtlich geschützt. '
-                'PrivatPDF ist Open Source unter [Lizenz angeben, z.B. MIT License]."',
-            isPlaceholder: true,
+            title: 'Urheberrecht und geistiges Eigentum',
+            content: 'Alle Inhalte dieser Website (Design, Code, Texte, Logos, Grafiken) sind urheberrechtlich geschützt und Eigentum von Oliver Raider, '
+                'soweit nicht anders gekennzeichnet.\n\n'
+                'Die Vervielfältigung, Bearbeitung, Verbreitung oder jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf '
+                'der schriftlichen Zustimmung des Betreibers.\n\n'
+                'Alle verwendeten PDF-Dateien verbleiben im Eigentum des Nutzers. PrivatPDF erhebt keinerlei Ansprüche auf die verarbeiteten Inhalte.',
+            isPlaceholder: false,
           ),
 
           // Open Source
           const LegalSection(
             title: 'Open Source',
-            content: 'PrivatPDF ist ein Open-Source-Projekt. Der Quellcode ist verfügbar auf GitHub.\n\n'
-                'TODO: GitHub-Repository-Link und Lizenzbedingungen angeben.',
-            isPlaceholder: true,
+            content: 'PrivatPDF ist ein Open-Source-Projekt. Der Quellcode ist öffentlich zugänglich unter:\n\n'
+                'GitHub: https://github.com/twixinator/PrivatePDF\n\n'
+                'Das Projekt wird unter der MIT-Lizenz veröffentlicht. Die MIT-Lizenz erlaubt die freie Nutzung, Modifikation und Verbreitung '
+                'des Quellcodes unter Beibehaltung des Copyright-Hinweises. Der vollständige Lizenztext ist im GitHub-Repository einsehbar.\n\n'
+                'Die Nutzung von PrivatPDF über diese Website unterliegt jedoch ausschließlich diesen AGB. Die Open-Source-Lizenz berechtigt '
+                'nicht zur kommerziellen Nutzung dieser konkreten Instanz ohne entsprechenden Tarif.',
+            isPlaceholder: false,
           ),
 
           // No warranty
           const LegalSection(
             title: 'Gewährleistungsausschluss',
-            content: 'TODO: Gewährleistungsausschluss bei kostenlosem Service.\n\n'
-                'Beispiel: "Da PrivatPDF kostenlos angeboten wird, sind Gewährleistungsansprüche ausgeschlossen, '
-                'soweit gesetzlich zulässig. Der Service wird bereitgestellt, wie er ist (\'as is\')."',
-            isPlaceholder: true,
+            content: 'Da PrivatPDF im Free-Tarif unentgeltlich angeboten wird (§ 521 BGB - Schenkung), sind Gewährleistungsansprüche '
+                'gemäß § 521 BGB ausgeschlossen, soweit gesetzlich zulässig.\n\n'
+                'Der Service wird bereitgestellt, wie er ist ("as is"). Es wird keine Gewähr für:\n'
+                '• die Verfügbarkeit, Fehlerfreiheit oder Vollständigkeit der Dienste,\n'
+                '• die Eignung für einen bestimmten Zweck,\n'
+                '• die Kompatibilität mit allen Browser-Versionen oder Betriebssystemen,\n'
+                '• die Richtigkeit der Verarbeitungsergebnisse\n\n'
+                'übernommen. Dies gilt nicht bei Vorsatz oder grober Fahrlässigkeit des Betreibers.\n\n'
+                'Für kostenpflichtige Tarife (Pro/Business) gelten die gesetzlichen Gewährleistungsrechte nach BGB.',
+            isPlaceholder: false,
           ),
 
           // Availability
           const LegalSection(
-            title: 'Verfügbarkeit',
-            content: 'TODO: Hinweise zur Verfügbarkeit.\n\n'
-                'Beispiel: "Wir bemühen uns um eine hohe Verfügbarkeit von PrivatPDF, können jedoch keine '
-                'ununterbrochene Erreichbarkeit garantieren. Wartungsarbeiten können zu vorübergehenden '
-                'Unterbrechungen führen."',
-            isPlaceholder: true,
+            title: 'Verfügbarkeit und Wartung',
+            content: 'Wir bemühen uns um eine hohe Verfügbarkeit von PrivatPDF. Ein Anspruch auf ununterbrochene Erreichbarkeit '
+                'besteht jedoch nicht, insbesondere nicht für den kostenlosen Free-Tarif.\n\n'
+                'Der Betreiber behält sich vor:\n'
+                '• Wartungsarbeiten durchzuführen, die zu vorübergehenden Unterbrechungen führen können,\n'
+                '• den Dienst jederzeit ohne Vorankündigung einzuschränken oder einzustellen,\n'
+                '• einzelne Funktionen zu ändern, zu entfernen oder hinzuzufügen,\n'
+                '• technische Anforderungen (z.B. unterstützte Browser) anzupassen.\n\n'
+                'Geplante Wartungsarbeiten werden nach Möglichkeit im Voraus angekündigt. Bei ungeplanten Ausfällen wird eine '
+                'schnellstmögliche Wiederherstellung angestrebt.\n\n'
+                'Für Business-Tarife: Es wird eine Verfügbarkeit von mindestens 95% pro Quartal angestrebt (best-effort).',
+            isPlaceholder: false,
           ),
 
           // Changes to terms
           const LegalSection(
             title: 'Änderungen der AGB',
-            content: 'TODO: Regelung zu AGB-Änderungen.\n\n'
-                'Beispiel: "Wir behalten uns vor, diese AGB jederzeit zu ändern. Änderungen werden auf dieser '
-                'Seite veröffentlicht. Die fortgesetzte Nutzung nach Änderungen gilt als Zustimmung."',
-            isPlaceholder: true,
+            content: 'Der Betreiber behält sich vor, diese AGB jederzeit zu ändern, soweit dies zur Anpassung an geänderte rechtliche '
+                'oder technische Rahmenbedingungen erforderlich ist oder der Einführung neuer Funktionen dient.\n\n'
+                'Änderungen werden auf dieser Seite veröffentlicht und treten mit Veröffentlichung in Kraft. '
+                'Das Datum der letzten Aktualisierung wird am Ende der AGB angegeben.\n\n'
+                'Bei wesentlichen Änderungen, die die Rechte der Nutzer betreffen, erfolgt nach Möglichkeit eine Information '
+                'per E-Mail (bei registrierten Pro-/Business-Nutzern) oder durch deutlichen Hinweis auf der Website.\n\n'
+                'Die fortgesetzte Nutzung von PrivatPDF nach Veröffentlichung der geänderten AGB gilt als Zustimmung zu den neuen Bedingungen. '
+                'Nutzer, die mit den Änderungen nicht einverstanden sind, können die Nutzung einstellen.',
+            isPlaceholder: false,
           ),
 
           // Applicable law
           const LegalSection(
-            title: 'Anwendbares Recht',
-            content: 'TODO: Anwendbares Recht und Gerichtsstand.\n\n'
-                'Beispiel: "Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des '
-                'UN-Kaufrechts. Gerichtsstand ist [Ihr Standort]."',
-            isPlaceholder: true,
+            title: 'Anwendbares Recht und Gerichtsstand',
+            content: 'Für diese AGB und alle Rechtsbeziehungen zwischen dem Betreiber und den Nutzern gilt ausschließlich das Recht '
+                'der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts (CISG).\n\n'
+                'Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesen AGB ist Augsburg, Deutschland, '
+                'soweit der Nutzer Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen ist.\n\n'
+                'Zwingende gesetzliche Bestimmungen über ausschließliche Gerichtsstände bleiben hiervon unberührt. '
+                'Für Verbraucher gelten die gesetzlichen Vorschriften über Gerichtsstände.\n\n'
+                'Die Bestimmungen des deutschen Datenschutzrechts (DSGVO, BDSG, TTDSG) finden uneingeschränkt Anwendung.',
+            isPlaceholder: false,
           ),
 
           // Severability clause
@@ -171,8 +208,8 @@ class AgbPage extends StatelessWidget {
           // Last updated
           const LegalSection(
             title: 'Stand dieser AGB',
-            content: 'TODO: Datum der letzten Aktualisierung angeben (z.B. "Stand: Januar 2026")',
-            isPlaceholder: true,
+            content: 'Stand: Januar 2026\n\nVersion 1.0',
+            isPlaceholder: false,
           ),
         ],
       ),

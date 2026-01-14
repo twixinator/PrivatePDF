@@ -29,23 +29,22 @@ class KontaktPage extends StatelessWidget {
           // Email contact
           const LegalSection(
             title: 'E-Mail',
-            content: 'TODO: Ihre E-Mail-Adresse eintragen',
-            isPlaceholder: true,
+            content: 'Die schnellste Möglichkeit, uns zu erreichen. Ideal für allgemeine Anfragen, Feedback oder geschäftliche Anliegen.',
+            isPlaceholder: false,
           ),
           _buildContactCard(
             context,
             icon: Icons.email_outlined,
             title: 'E-Mail-Adresse',
-            content: 'ihre-email@beispiel.de',
+            content: 'raider.o@arcor.de',
             action: 'E-Mail senden',
             onTap: () async {
-              // TODO: Replace with actual email
-              final uri = Uri.parse('mailto:ihre-email@beispiel.de?subject=Kontakt%20von%20PrivatPDF');
+              final uri = Uri.parse('mailto:raider.o@arcor.de?subject=Kontakt%20von%20PrivatPDF');
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri);
               }
             },
-            isPlaceholder: true,
+            isPlaceholder: false,
           ),
 
           const SizedBox(height: Spacing.xl),
@@ -53,23 +52,23 @@ class KontaktPage extends StatelessWidget {
           // GitHub Issues
           const LegalSection(
             title: 'GitHub Issues',
-            content: 'Für Bug-Reports, Feature-Requests oder technische Fragen nutzen Sie gerne GitHub Issues.',
+            content: 'Für Bug-Reports, Feature-Requests oder technische Fragen nutzen Sie gerne GitHub Issues. '
+                'Hier können Sie auch den Quellcode einsehen und zur Weiterentwicklung beitragen.',
             isPlaceholder: false,
           ),
           _buildContactCard(
             context,
             icon: Icons.bug_report_outlined,
             title: 'GitHub Issues',
-            content: 'Ideal für Bug-Reports und Feature-Requests',
+            content: 'Ideal für Bug-Reports, Feature-Requests und technische Diskussionen',
             action: 'Zu GitHub Issues',
             onTap: () async {
-              // TODO: Replace with actual GitHub repository URL
-              final uri = Uri.parse('https://github.com/privatpdf/privatpdf/issues');
+              final uri = Uri.parse('https://github.com/twixinator/PrivatePDF/issues');
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri);
               }
             },
-            isPlaceholder: true,
+            isPlaceholder: false,
           ),
 
           const SizedBox(height: Spacing.xl),
@@ -77,10 +76,13 @@ class KontaktPage extends StatelessWidget {
           // Response time
           const LegalSection(
             title: 'Antwortzeiten',
-            content: 'TODO: Erwartete Antwortzeiten angeben.\n\n'
-                'Beispiel: "Wir bemühen uns, alle Anfragen innerhalb von 2-3 Werktagen zu beantworten. '
-                'Bei technischen Problemen nutzen Sie bitte GitHub Issues für schnellere Hilfe durch die Community."',
-            isPlaceholder: true,
+            content: 'PrivatPDF wird von einem Solo-Entwickler betrieben. Wir bemühen uns, alle Anfragen zeitnah zu beantworten:\n\n'
+                '• E-Mail-Anfragen: Innerhalb von 2-5 Werktagen\n'
+                '• GitHub Issues: Oft schneller durch Community-Unterstützung\n'
+                '• Dringende technische Probleme: Priorisierte Bearbeitung\n\n'
+                'Bitte haben Sie Verständnis, dass die Antwortzeiten je nach Aufkommen und Komplexität der Anfrage variieren können. '
+                'Für technische Probleme empfehlen wir GitHub Issues, da dort auch andere Nutzer und Entwickler helfen können.',
+            isPlaceholder: false,
           ),
 
           // Support topics
@@ -101,14 +103,17 @@ class KontaktPage extends StatelessWidget {
             isPlaceholder: false,
           ),
 
-          // Social Media (optional)
+          // Open Source Community
           const LegalSection(
-            title: 'Social Media (optional)',
-            content: 'TODO: Falls Social Media Kanäle vorhanden, hier verlinken:\n'
-                '• Twitter/X: @privatpdf\n'
-                '• LinkedIn: PrivatPDF\n'
-                '• Mastodon: @privatpdf@mastodon.social',
-            isPlaceholder: true,
+            title: 'Open-Source-Community',
+            content: 'PrivatPDF ist ein Open-Source-Projekt. Wir freuen uns über Beiträge, Feedback und Diskussionen '
+                'in der GitHub-Community:\n\n'
+                '• GitHub Repository: https://github.com/twixinator/PrivatePDF\n'
+                '• Discussions: Für allgemeine Fragen und Ideen\n'
+                '• Pull Requests: Willkommen für Code-Verbesserungen\n'
+                '• Issues: Für Bug-Reports und Feature-Requests\n\n'
+                'Jeder kann zur Weiterentwicklung von PrivatPDF beitragen und den Quellcode einsehen.',
+            isPlaceholder: false,
           ),
 
           // Data protection notice
