@@ -27,18 +27,21 @@ class DatenschutzPage extends StatelessWidget {
 
           // General information
           const LegalSection(
-            title: 'Allgemeine Hinweise',
-            content: 'TODO: Name des Verantwortlichen gemäß Art. 13 DSGVO:\n'
-                '[Ihr Name/Firmenname]\n'
-                '[Ihre Adresse]\n'
-                '[Ihre Kontaktdaten]',
-            isPlaceholder: true,
+            title: '1. Verantwortlicher',
+            content: 'Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:\n\n'
+                'Oliver Raider\n'
+                'Hinter den Gärten 2a\n'
+                '86637 Wertingen\n'
+                'Deutschland\n\n'
+                'E-Mail: raider.o@arcor.de',
+            isPlaceholder: false,
           ),
 
           // Data processing overview
           const LegalSection(
-            title: 'Datenverarbeitung auf dieser Website',
-            content: 'Wie erfassen wir Ihre Daten?',
+            title: '2. Grundsatz: Privacy by Design',
+            content: 'PrivatPDF wurde nach dem Prinzip "Privacy by Design" (Art. 25 DSGVO) entwickelt. '
+                'Im Gegensatz zu anderen PDF-Tools werden Ihre Dateien NICHT auf Server hochgeladen:',
             isPlaceholder: false,
           ),
           const LegalBulletList(
@@ -53,8 +56,9 @@ class DatenschutzPage extends StatelessWidget {
 
           // localStorage Analytics
           const LegalSection(
-            title: 'Lokale Nutzungsstatistiken (localStorage)',
-            content: 'PrivatPDF speichert anonyme Nutzungsstatistiken ausschließlich lokal in Ihrem Browser (localStorage):',
+            title: '3. Lokale Nutzungsstatistiken (localStorage)',
+            content: 'Um die Benutzerfreundlichkeit zu verbessern, speichert PrivatPDF anonyme Nutzungsstatistiken '
+                'ausschließlich lokal in Ihrem Browser (localStorage):',
             isPlaceholder: false,
           ),
           const LegalBulletList(
@@ -80,98 +84,145 @@ class DatenschutzPage extends StatelessWidget {
 
           // Hosting
           const LegalSection(
-            title: 'Hosting',
+            title: '4. Hosting und Server-Logs',
             content: 'Diese Website wird gehostet bei:\n\n'
-                'TODO: Hosting-Anbieter angeben (z.B. Vercel Inc., Name, Adresse)\n\n'
-                'Beim Besuch der Website werden automatisch folgende Daten in Server-Log-Dateien gespeichert:',
-            isPlaceholder: true,
+                'Vercel Inc.\n'
+                '440 N Barranca Ave #4133\n'
+                'Covina, CA 91723\n'
+                'USA\n\n'
+                'Beim Besuch der Website werden automatisch folgende technische Daten in Server-Log-Dateien gespeichert:',
+            isPlaceholder: false,
           ),
           const LegalBulletList(
             items: [
-              'IP-Adresse (anonymisiert)',
+              'Anonymisierte IP-Adresse (gekürzt auf 3 Oktette)',
               'Datum und Uhrzeit des Zugriffs',
-              'Aufgerufene Seite',
-              'Browser-Typ und Version',
-              'Betriebssystem',
+              'Aufgerufene Seite/URL',
+              'HTTP-Statuscode',
+              'Übertragene Datenmenge',
+              'Browser-Typ und Version (User-Agent)',
+              'Referer (zuvor besuchte Seite)',
             ],
-            isPlaceholder: true,
+            isPlaceholder: false,
           ),
           const LegalSection(
             title: '',
-            content: 'TODO: Angeben, wie lange Server-Logs gespeichert werden und Rechtsgrundlage.\n\n'
-                'Beispiel: "Diese Daten werden nach 30 Tagen automatisch gelöscht. '
-                'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (Sicherstellung des technischen Betriebs)."',
-            isPlaceholder: true,
+            content: 'Diese Daten dienen ausschließlich der Sicherstellung der Systemstabilität, Fehleranalyse und '
+                'Abwehr von Angriffen. Eine Zusammenführung mit anderen Datenquellen erfolgt nicht.\n\n'
+                'Speicherdauer: Die Logs werden nach maximal 30 Tagen automatisch gelöscht.\n\n'
+                'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Sicherstellung '
+                'des technischen Betriebs und der IT-Sicherheit).\n\n'
+                'Datenübermittlung in Drittländer: Vercel verarbeitet Daten teilweise in den USA. Die Datenübermittlung '
+                'erfolgt auf Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). '
+                'Weitere Informationen: https://vercel.com/legal/privacy-policy',
+            isPlaceholder: false,
           ),
 
           // CDN
           const LegalSection(
-            title: 'Content Delivery Network (CDN)',
-            content: 'Wir nutzen folgende CDN-Dienste zum Laden von Bibliotheken:',
-            isPlaceholder: false,
-          ),
-          const LegalBulletList(
-            items: [
-              'jsDelivr (cdn.jsdelivr.net) - für pdf-lib Bibliothek',
-              'Google Fonts (fonts.googleapis.com) - für Schriftarten',
-              'Gstatic (www.gstatic.com) - für Flutter CanvasKit',
-            ],
+            title: '5. Content Delivery Networks (CDN)',
+            content: 'Zur schnelleren Auslieferung von Inhalten nutzen wir folgende CDN-Dienste:',
             isPlaceholder: false,
           ),
           const LegalSection(
-            title: '',
-            content: 'TODO: Datenschutzerklärungen der CDN-Anbieter verlinken und Rechtsgrundlage angeben.',
-            isPlaceholder: true,
+            title: '5.1 jsDelivr (cdn.jsdelivr.net)',
+            content: 'Wir verwenden jsDelivr zum Laden der pdf-lib JavaScript-Bibliothek. Dabei kann Ihre IP-Adresse '
+                'an jsDelivr übermittelt werden.\n\n'
+                'Anbieter: ProspectOne Sp. z o.o., Polen\n'
+                'Datenschutzerklärung: https://www.jsdelivr.com/privacy-policy-jsdelivr-net\n'
+                'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (technische Bereitstellung der Website)',
+            isPlaceholder: false,
+          ),
+          const LegalSection(
+            title: '5.2 Google Fonts',
+            content: 'Diese Website nutzt Google Fonts zur einheitlichen Darstellung von Schriftarten. '
+                'Beim Aufruf werden Schriftarten lokal geladen, sodass KEINE Verbindung zu Google-Servern hergestellt wird.\n\n'
+                'Alternativ: Falls Google Fonts extern geladen werden:\n'
+                'Anbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland\n'
+                'Datenschutzerklärung: https://policies.google.com/privacy\n'
+                'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO',
+            isPlaceholder: false,
+          ),
+          const LegalSection(
+            title: '5.3 Gstatic (Flutter CanvasKit)',
+            content: 'Flutter Web nutzt CanvasKit von Gstatic (Google) zur Darstellung der Benutzeroberfläche. '
+                'Dabei kann Ihre IP-Adresse an Google übermittelt werden.\n\n'
+                'Anbieter: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland\n'
+                'Datenschutzerklärung: https://policies.google.com/privacy\n'
+                'Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (technische Bereitstellung der Web-App)',
+            isPlaceholder: false,
           ),
 
           // Your rights
           const LegalSection(
-            title: 'Ihre Rechte',
+            title: '6. Ihre Rechte als betroffene Person',
             content: 'Sie haben folgende Rechte gemäß DSGVO:',
             isPlaceholder: false,
           ),
           const LegalBulletList(
             items: [
-              'Recht auf Auskunft (Art. 15 DSGVO)',
-              'Recht auf Berichtigung (Art. 16 DSGVO)',
-              'Recht auf Löschung (Art. 17 DSGVO)',
+              'Recht auf Auskunft (Art. 15 DSGVO) über die von uns gespeicherten Daten',
+              'Recht auf Berichtigung (Art. 16 DSGVO) unrichtiger Daten',
+              'Recht auf Löschung (Art. 17 DSGVO) Ihrer Daten',
               'Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)',
               'Recht auf Datenübertragbarkeit (Art. 20 DSGVO)',
-              'Recht auf Widerspruch (Art. 21 DSGVO)',
+              'Recht auf Widerspruch (Art. 21 DSGVO) gegen die Verarbeitung',
               'Recht auf Beschwerde bei einer Aufsichtsbehörde (Art. 77 DSGVO)',
             ],
             isPlaceholder: false,
           ),
           const LegalSection(
             title: '',
-            content: 'TODO: Kontaktinformationen für Datenschutzanfragen angeben.\n\n'
-                'Da PrivatPDF keine personenbezogenen Daten sammelt, fallen die meisten Rechte faktisch nicht an. '
-                'Bei Fragen wenden Sie sich bitte an: [Ihre E-Mail]',
-            isPlaceholder: true,
-          ),
-
-          // Data protection officer (if applicable)
-          const LegalSection(
-            title: 'Datenschutzbeauftragter (falls zutreffend)',
-            content: 'TODO: Falls gesetzlich erforderlich, Kontaktdaten des Datenschutzbeauftragten angeben.\n\n'
-                'Hinweis: Ein Datenschutzbeauftragter ist in Deutschland ab 20 Mitarbeitern verpflichtend.',
-            isPlaceholder: true,
+            content: 'Wichtiger Hinweis: Da PrivatPDF nach dem Prinzip "Privacy by Design" keine personenbezogenen Daten '
+                'sammelt oder speichert, fallen die meisten dieser Rechte faktisch nicht an. Ihre PDF-Dateien verbleiben '
+                'ausschließlich auf Ihrem Gerät.\n\n'
+                'Bei Fragen zur Datenverarbeitung wenden Sie sich bitte an: raider.o@arcor.de\n\n'
+                'Zuständige Aufsichtsbehörde für Deutschland:\n'
+                'Die Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI)\n'
+                'Graurheindorfer Str. 153, 53117 Bonn\n'
+                'https://www.bfdi.bund.de',
+            isPlaceholder: false,
           ),
 
           // SSL/TLS encryption
           const LegalSection(
-            title: 'SSL- bzw. TLS-Verschlüsselung',
+            title: '8. SSL- bzw. TLS-Verschlüsselung',
             content: 'Diese Website nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte '
                 'eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die '
-                'Adresszeile des Browsers von "http://" auf "https://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.',
+                'Adresszeile des Browsers von "http://" auf "https://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.\n\n'
+                'Wenn die SSL- bzw. TLS-Verschlüsselung aktiviert ist, können die Daten, die Sie an uns übermitteln, '
+                'nicht von Dritten mitgelesen werden.',
+            isPlaceholder: false,
+          ),
+
+          // Cookies section
+          const LegalSection(
+            title: '9. Cookies und Browser-Speicher',
+            content: 'Diese Website verwendet KEINE Tracking-Cookies. Die einzigen im Browser gespeicherten Daten sind:\n\n'
+                '• localStorage-Einträge für lokale Nutzungsstatistiken (siehe Abschnitt 3)\n'
+                '• Funktionale Daten zur Darstellung der Benutzeroberfläche\n\n'
+                'Diese Daten dienen ausschließlich technischen Zwecken und werden niemals an Server übertragen. '
+                'Sie können diese Daten jederzeit durch Löschen Ihres Browser-Cache entfernen.',
+            isPlaceholder: false,
+          ),
+
+          // Widerspruchsrecht
+          const LegalSection(
+            title: '10. Widerspruchsrecht gegen Datenverarbeitung',
+            content: 'Sofern eine Datenverarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse) '
+                'erfolgt, haben Sie das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit '
+                'gegen diese Verarbeitung Widerspruch einzulegen.\n\n'
+                'Nach einem Widerspruch werden wir die betroffenen Daten nicht mehr verarbeiten, es sei denn, wir können '
+                'zwingende schutzwürdige Gründe für die Verarbeitung nachweisen.\n\n'
+                'Kontakt für Widerspruch: raider.o@arcor.de',
             isPlaceholder: false,
           ),
 
           // Last updated
           const LegalSection(
-            title: 'Stand dieser Datenschutzerklärung',
-            content: 'TODO: Datum der letzten Aktualisierung angeben (z.B. "Stand: Januar 2026")',
-            isPlaceholder: true,
+            title: '11. Stand dieser Datenschutzerklärung',
+            content: 'Stand: Januar 2026',
+            isPlaceholder: false,
           ),
         ],
       ),

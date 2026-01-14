@@ -19,71 +19,34 @@ class ImpressumPage extends StatelessWidget {
           // Introduction
           const LegalSection(
             title: 'Angaben gemäß § 5 TMG',
-            content: 'TODO: Vollständiger Name oder Firmenname eintragen',
-            isPlaceholder: true,
+            content: 'Oliver Raider',
+            isPlaceholder: false,
           ),
 
           // Address
           const LegalSection(
             title: 'Anschrift',
-            content: 'TODO: Vollständige Postadresse eintragen:\n'
-                '• Straße und Hausnummer\n'
-                '• PLZ und Ort\n'
-                '• Land',
-            isPlaceholder: true,
+            content: 'Hinter den Gärten 2a\n'
+                '86637 Wertingen\n'
+                'Deutschland',
+            isPlaceholder: false,
           ),
 
           // Contact
           const LegalSection(
             title: 'Kontakt',
-            content: 'TODO: Kontaktdaten eintragen:',
-            isPlaceholder: true,
-          ),
-          const LegalBulletList(
-            items: [
-              'E-Mail: ihre-email@beispiel.de',
-              'Telefon: +49 (0) XXX XXXXXXXX (optional)',
-            ],
-            isPlaceholder: true,
-          ),
-
-          // Optional: Business registration
-          const LegalSection(
-            title: 'Registereintrag (falls zutreffend)',
-            content: 'TODO: Falls gewerblich/Unternehmen:',
-            isPlaceholder: true,
-          ),
-          const LegalBulletList(
-            items: [
-              'Registergericht: [z.B. Amtsgericht München]',
-              'Registernummer: [z.B. HRB 123456]',
-            ],
-            isPlaceholder: true,
-          ),
-
-          // Optional: VAT ID
-          const LegalSection(
-            title: 'Umsatzsteuer-ID (falls zutreffend)',
-            content: 'TODO: Falls USt-ID vorhanden:\n'
-                'Umsatzsteuer-Identifikationsnummer gemäß §27a UStG: DE123456789',
-            isPlaceholder: true,
+            content: 'E-Mail: raider.o@arcor.de',
+            isPlaceholder: false,
           ),
 
           // Responsible for content
           const LegalSection(
-            title: 'Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV',
-            content: 'TODO: Name und Adresse der verantwortlichen Person eintragen\n'
-                '(oft identisch mit oben)',
-            isPlaceholder: true,
-          ),
-
-          // Optional: Professional liability insurance
-          const LegalSection(
-            title: 'Berufshaftpflichtversicherung (optional)',
-            content: 'TODO: Falls zutreffend:\n'
-                '• Name und Sitz des Versicherers\n'
-                '• Geltungsraum der Versicherung',
-            isPlaceholder: true,
+            title: 'Verantwortlich für den Inhalt',
+            content: 'Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:\n\n'
+                'Oliver Raider\n'
+                'Hinter den Gärten 2a\n'
+                '86637 Wertingen',
+            isPlaceholder: false,
           ),
 
           // EU Dispute Resolution
@@ -98,10 +61,9 @@ class ImpressumPage extends StatelessWidget {
           // Consumer dispute resolution
           const LegalSection(
             title: 'Verbraucherstreitbeilegung / Universalschlichtungsstelle',
-            content: 'TODO: Position zur Teilnahme an Streitbeilegungsverfahren angeben.\n\n'
-                'Beispiel: "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren '
-                'vor einer Verbraucherschlichtungsstelle teilzunehmen."',
-            isPlaceholder: true,
+            content: 'Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer '
+                'Verbraucherschlichtungsstelle teilzunehmen.',
+            isPlaceholder: false,
           ),
         ],
       ),
